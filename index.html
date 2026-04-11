@@ -1454,9 +1454,10 @@
     reveals.forEach(el => observer.observe(el));
 
     // Waitlist form
-    document.getElementById('waitlistForm').addEventListener('submit', function(e) {
+    const wf = document.getElementById('waitlistForm');
+    if (wf) wf.addEventListener('submit', function(e) {
       e.preventDefault();
-      this.style.display = 'none';
+      wf.style.display = 'none';
       document.getElementById('successMsg').style.display = 'block';
     });
 
