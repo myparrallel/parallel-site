@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parallel — Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a1209;
+      --off-black: #0d1610;
+      --card: #111d13;
+      --border: #1e3022;
+      --sage: #4a7c6a;
+      --sage-light: #5d9b85;
+      --sage-glow: rgba(74, 124, 106, 0.18);
+      --warm: #c9b99a;
+      --warm-dim: #7a6e60;
+      --white: #f0ece4;
+      --muted: #4a5e4d;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ---- NAV ---- */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 48px;
+      background: rgba(13,13,13,0.96);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-logo span { color: var(--sage-light); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--warm-dim);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+
+    .nav-links a:hover, .nav-links a.active { color: var(--white); }
+
+    .nav-cta {
+      background: var(--sage) !important;
+      color: var(--white) !important;
+      padding: 9px 22px !important;
+      border-radius: 100px;
+      text-transform: none !important;
+      letter-spacing: 0.02em !important;
+      font-size: 0.875rem !important;
+      transition: background 0.2s !important;
+    }
+
+    .nav-cta:hover { background: var(--sage-light) !important; }
+
+    /* ---- PAGE SYSTEM ---- */
+    .page { display: none; padding-top: 80px; }
+    .page.active { display: block; }
+
+    /* ---- SHARED UTILITIES ---- */
+    .section-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--sage-light);
+      margin-bottom: 16px;
+    }
+
+    .section-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1.12;
+      font-weight: 700;
+    }
+
+    .section-headline em {
+      font-style: italic;
+      color: var(--sage-light);
+    }
+
+    .category-pill {
+      display: inline-block;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      color: var(--warm-dim);
+    }
+
+    .category-pill.product { border-color: var(--sage); color: var(--sage-light); }
+    .category-pill.mental-health { border-color: #7a6ea0; color: #a99fc8; }
+    .category-pill.community { border-color: #7a6e50; color: #c8b880; }
+
+    /* ============================================
+       PAGE 1: LANDING BLOG SECTION (preview)
+       ============================================ */
+    #page-landing {
+      min-height: 100vh;
+    }
+
+    .blog-preview-section {
+      padding: 100px 48px 120px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .blog-preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 56px;
+    }
+
+    .blog-preview-header .left { max-width: 480px; }
+
+    .see-all-link {
+      font-size: 0.85rem;
+      color: var(--sage-light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: gap 0.2s;
+    }
+
+    .see-all-link:hover { gap: 14px; }
+
+    /* Featured + side cards */
+    .blog-preview-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 20px;
+    }
+
+    .blog-card-featured {
+      grid-row: span 2;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.25s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .blog-card-featured:hover {
+      border-color: var(--sage);
+      transform: translateY(-3px);
+    }
+
+    .featured-cover {
+      height: 260px;
+      background: linear-gradient(135deg, #1a2e26 0%, #0f1a14 50%, #1a1a2e 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cover-art {
+      font-size: 5rem;
+      opacity: 0.18;
+      user-select: none;
+    }
+
+    .cover-accent {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(74,124,106,0.15) 0%, transparent 70%);
+    }
+
+    .featured-body {
+      padding: 32px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .featured-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .meta-date {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .featured-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 14px;
+    }
+
+    .featured-excerpt {
+      font-size: 0.92rem;
+      color: var(--warm-dim);
+      line-height: 1.7;
+      flex: 1;
+    }
+
+    .read-more {
+      margin-top: 24px;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sage-light);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: gap 0.2s;
+    }
+
+    .blog-card-featured:hover .read-more { gap: 14px; }
+
+    /* Side cards */
+    .blog-card-side {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      cursor: pointer;
+      transition: border-color 0.25s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .blog-card-side:hover {
+      border-color: var(--sage);
+      transform: translateY(-2px);
+    }
+
+    .side-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .side-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .side-excerpt {
+      font-size: 0.85rem;
+      color: var(--warm-dim);
+      line-height: 1.6;
+    }
+
+    /* ============================================
+       PAGE 2: FULL BLOG INDEX
+       ============================================ */
+    #page-blog {
+      min-height: 100vh;
+    }
+
+    .blog-hero {
+      padding: 80px 48px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .blog-hero-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 40px;
+    }
+
+    .blog-filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--warm-dim);
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.06em;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--sage);
+      color: var(--sage-light);
+      background: var(--sage-glow);
+    }
+
+    .blog-index-grid {
+      padding: 60px 48px 100px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Featured row at top */
+    .blog-index-featured {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* Standard grid below */
+    .blog-index-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .blog-card-standard {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.25s, transform 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .blog-card-standard:hover {
+      border-color: var(--sage);
+      transform: translateY(-3px);
+    }
+
+    .card-cover-sm {
+      height: 160px;
+      background: linear-gradient(135deg, #1a2e26 0%, #0f1a14 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      opacity: 0.9;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-cover-sm::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(13,13,13,0.6) 100%);
+    }
+
+    .card-cover-sm.purple { background: linear-gradient(135deg, #1e1a2e 0%, #0f0f1a 100%); }
+    .card-cover-sm.warm { background: linear-gradient(135deg, #2e2010 0%, #1a1208 100%); }
+    .card-cover-sm.blue { background: linear-gradient(135deg, #0f1e2e 0%, #081018 100%); }
+    .card-cover-sm.red { background: linear-gradient(135deg, #2e1010 0%, #1a0808 100%); }
+
+    .card-body {
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-date { font-size: 0.72rem; color: var(--muted); }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .card-excerpt {
+      font-size: 0.83rem;
+      color: var(--warm-dim);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .card-read {
+      margin-top: 14px;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--sage-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: gap 0.2s;
+    }
+
+    .blog-card-standard:hover .card-read { gap: 12px; }
+
+    /* Load more */
+    .load-more-row {
+      text-align: center;
+      margin-top: 56px;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--warm-dim);
+      border: 1px solid var(--border);
+      padding: 14px 36px;
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .btn-ghost:hover { border-color: var(--warm-dim); color: var(--white); }
+
+    /* ============================================
+       PAGE 3: SINGLE POST
+       ============================================ */
+    #page-post {
+      min-height: 100vh;
+    }
+
+    .post-header {
+      padding: 80px 48px 0;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .post-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--warm-dim);
+      cursor: pointer;
+      transition: color 0.2s;
+      margin-bottom: 40px;
+    }
+
+    .post-back:hover { color: var(--white); }
+
+    .post-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .post-date { font-size: 0.8rem; color: var(--muted); }
+
+    .post-read-time {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .post-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .post-title em { font-style: italic; color: var(--sage-light); }
+
+    .post-subtitle {
+      font-size: 1.15rem;
+      color: var(--warm);
+      line-height: 1.65;
+      max-width: 58ch;
+      margin-bottom: 40px;
+      border-left: 2px solid var(--sage);
+      padding-left: 20px;
+    }
+
+    .post-cover {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+      height: 380px;
+      background: linear-gradient(135deg, #1a2e26 0%, #0f1a14 40%, #1a1a2e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6rem;
+      opacity: 0.7;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-cover::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(74,124,106,0.12) 0%, transparent 70%);
+    }
+
+    .post-body {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 60px 48px 100px;
+    }
+
+    .post-body h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem;
+      font-weight: 700;
+      margin: 52px 0 18px;
+      line-height: 1.25;
+    }
+
+    .post-body h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 36px 0 12px;
+      color: var(--warm);
+    }
+
+    .post-body p {
+      font-size: 1.05rem;
+      color: var(--warm-dim);
+      line-height: 1.85;
+      margin-bottom: 24px;
+    }
+
+    .post-body p strong {
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .post-body blockquote {
+      margin: 40px 0;
+      padding: 24px 28px;
+      border-left: 2px solid var(--sage);
+      background: var(--card);
+      border-radius: 0 12px 12px 0;
+    }
+
+    .post-body blockquote p {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--warm);
+      margin: 0;
+    }
+
+    .post-body ul {
+      list-style: none;
+      margin: 0 0 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .post-body ul li {
+      padding-left: 20px;
+      position: relative;
+      font-size: 1rem;
+      color: var(--warm-dim);
+      line-height: 1.7;
+    }
+
+    .post-body ul li::before {
+      content: '◆';
+      position: absolute;
+      left: 0;
+      color: var(--sage-light);
+      font-size: 0.5rem;
+      top: 8px;
+    }
+
+    .post-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 48px 0;
+    }
+
+    .post-sage-note {
+      background: var(--sage-glow);
+      border: 1px solid rgba(74,124,106,0.35);
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin: 40px 0;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .sage-note-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      color: var(--white);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .sage-note-text {
+      font-size: 0.9rem;
+      color: var(--warm);
+      line-height: 1.65;
+    }
+
+    .sage-note-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sage-light);
+      margin-bottom: 6px;
+    }
+
+    /* Post footer / related */
+    .post-footer {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 48px 80px;
+      border-top: 1px solid var(--border);
+      padding-top: 56px;
+    }
+
+    .post-footer-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--sage-light);
+      margin-bottom: 28px;
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .related-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.15s;
+    }
+
+    .related-card:hover {
+      border-color: var(--sage);
+      transform: translateY(-2px);
+    }
+
+    .related-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.3;
+      margin: 8px 0 6px;
+    }
+
+    .related-date { font-size: 0.72rem; color: var(--muted); }
+
+    /* ---- ANIMATIONS ---- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 900px) {
+      nav { padding: 18px 24px; }
+      .blog-preview-section, .blog-hero, .blog-index-grid, .post-header, .post-body, .post-footer { padding-left: 24px; padding-right: 24px; }
+      .blog-preview-grid, .blog-index-featured { grid-template-columns: 1fr; }
+      .blog-card-featured { grid-row: span 1; }
+      .blog-index-cards { grid-template-columns: 1fr 1fr; }
+      .related-grid { grid-template-columns: 1fr; }
+      .blog-preview-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .blog-hero-inner { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 600px) {
+      .blog-index-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" onclick="showPage('landing')">Parallel<span>.</span></a>
+    <ul class="nav-links">
+      <li><a onclick="showPage('landing')">Home</a></li>
+      <li><a onclick="showPage('blog')" id="nav-blog">Blog</a></li>
+      <li><a href="#" class="nav-cta">Join waitlist</a></li>
+    </ul>
+  </nav>
+
+  <!-- ================================================
+       PAGE 1: LANDING BLOG PREVIEW SECTION
+       ================================================ -->
+  <div id="page-landing" class="page active">
+    <div class="blog-preview-section">
+
+      <div class="blog-preview-header reveal">
+        <div class="left">
+          <p class="section-label">From the Parallel team</p>
+          <h2 class="section-headline">What we're <em>thinking</em> about.</h2>
+          <p style="margin-top:14px; color:var(--warm-dim); font-size:0.95rem; max-width:44ch;">Product updates, mental health insights, and honest writing about why we're building this.</p>
+        </div>
+        <a class="see-all-link" onclick="showPage('blog')">All posts &nbsp;→</a>
+      </div>
+
+      <div class="blog-preview-grid reveal">
+
+        <!-- Featured post -->
+        <div class="blog-card-featured" onclick="showPage('post')">
+          <div class="featured-cover">
+            <div class="cover-accent"></div>
+            <div class="cover-art">🌿</div>
+          </div>
+          <div class="featured-body">
+            <div class="featured-meta">
+              <span class="category-pill product">Product</span>
+              <span class="meta-date">May 12, 2025</span>
+            </div>
+            <h3 class="featured-title">Why Parallel doesn't have a therapy feature — and never will</h3>
+            <p class="featured-excerpt">There's a version of this product that could have been a meditation app. Or a CBT tool. Or another platform that funnels you toward a licensed professional. We built something different on purpose.</p>
+            <span class="read-more">Read more &nbsp;→</span>
+          </div>
+        </div>
+
+        <!-- Side card 1 -->
+        <div class="blog-card-side" onclick="showPage('post')">
+          <div class="side-meta">
+            <span class="category-pill mental-health">Mental Health</span>
+            <span class="meta-date" style="font-size:0.72rem; color:var(--muted);">May 5, 2025</span>
+          </div>
+          <h3 class="side-title">The difference between venting and processing — and why both matter</h3>
+          <p class="side-excerpt">We built a whole feature around the idea that sometimes you just need to say the thing. No feedback. No solutions. Just release.</p>
+          <span class="read-more" style="font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--sage-light);">Read more →</span>
+        </div>
+
+        <!-- Side card 2 -->
+        <div class="blog-card-side" onclick="showPage('post')">
+          <div class="side-meta">
+            <span class="category-pill community" style="border-color:#7a6e50; color:#c8b880;">Community</span>
+            <span class="meta-date" style="font-size:0.72rem; color:var(--muted);">Apr 28, 2025</span>
+          </div>
+          <h3 class="side-title">What "lived experience" actually means on Parallel</h3>
+          <p class="side-excerpt">We keep using that phrase. Here's what it means in practice — and what it demands of the people who show up to help.</p>
+          <span class="read-more" style="font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--sage-light);">Read more →</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================
+       PAGE 2: FULL BLOG INDEX
+       ================================================ -->
+  <div id="page-blog" class="page">
+
+    <div class="blog-hero">
+      <div class="blog-hero-inner">
+        <div>
+          <p class="section-label">The Parallel Blog</p>
+          <h1 class="section-headline">Product updates.<br><em>Real talk.</em> Mental health.</h1>
+        </div>
+        <p style="max-width:36ch; color:var(--warm-dim); font-size:0.95rem; line-height:1.8;">Weekly writing from the team building Parallel — on what we're making, why we're making it, and the larger conversation around mental health and community support.</p>
+      </div>
+      <div class="blog-filters">
+        <button class="filter-btn active" onclick="filterPosts(this, 'all')">All posts</button>
+        <button class="filter-btn" onclick="filterPosts(this, 'product')">Product</button>
+        <button class="filter-btn" onclick="filterPosts(this, 'mental-health')">Mental Health</button>
+        <button class="filter-btn" onclick="filterPosts(this, 'community')">Community</button>
+      </div>
+    </div>
+
+    <div class="blog-index-grid">
+
+      <!-- Featured row -->
+      <div class="blog-index-featured">
+        <div class="blog-card-featured" onclick="showPage('post')" style="min-height:380px;">
+          <div class="featured-cover">
+            <div class="cover-accent"></div>
+            <div class="cover-art">🌿</div>
+          </div>
+          <div class="featured-body">
+            <div class="featured-meta">
+              <span class="category-pill product">Product</span>
+              <span class="meta-date">May 12, 2025</span>
+            </div>
+            <h3 class="featured-title">Why Parallel doesn't have a therapy feature — and never will</h3>
+            <p class="featured-excerpt">There's a version of this product that could have been a meditation app. Or a CBT tool. We built something different on purpose.</p>
+            <span class="read-more">Read more &nbsp;→</span>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:20px;">
+          <div class="blog-card-side" style="flex:1;" onclick="showPage('post')">
+            <div class="side-meta">
+              <span class="category-pill mental-health">Mental Health</span>
+              <span class="meta-date" style="font-size:0.72rem; color:var(--muted);">May 5, 2025</span>
+            </div>
+            <h3 class="side-title">The difference between venting and processing</h3>
+            <p class="side-excerpt">We built a whole feature around the idea that sometimes you just need to say the thing. No feedback. No solutions. Just release.</p>
+            <span class="read-more" style="font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--sage-light);">Read →</span>
+          </div>
+          <div class="blog-card-side" style="flex:1;" onclick="showPage('post')">
+            <div class="side-meta">
+              <span class="category-pill community" style="border-color:#7a6e50; color:#c8b880;">Community</span>
+              <span class="meta-date" style="font-size:0.72rem; color:var(--muted);">Apr 28, 2025</span>
+            </div>
+            <h3 class="side-title">What "lived experience" actually means on Parallel</h3>
+            <p class="side-excerpt">We keep using that phrase. Here's what it means in practice — and what it demands.</p>
+            <span class="read-more" style="font-size:0.75rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--sage-light);">Read →</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Standard grid -->
+      <div class="blog-index-cards" id="postGrid">
+
+        <div class="blog-card-standard" data-category="mental-health" onclick="showPage('post')">
+          <div class="card-cover-sm purple">🧠</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="category-pill mental-health">Mental Health</span>
+              <span class="card-date">Apr 20, 2025</span>
+            </div>
+            <h3 class="card-title">Peer support isn't a lesser form of help. It's a different kind.</h3>
+            <p class="card-excerpt">The assumption that professional help is always the goal misses something important about how humans actually heal.</p>
+            <span class="card-read">Read more →</span>
+          </div>
+        </div>
+
+        <div class="blog-card-standard" data-category="product" onclick="showPage('post')">
+          <div class="card-cover-sm">🌊</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="category-pill product">Product</span>
+              <span class="card-date">Apr 14, 2025</span>
+            </div>
+            <h3 class="card-title">Building Venting: why we made a feature that deletes itself</h3>
+            <p class="card-excerpt">The design thinking behind Float, Heartbeat, and Burn — and why the sacred nature of venting shaped every decision.</p>
+            <span class="card-read">Read more →</span>
+          </div>
+        </div>
+
+        <div class="blog-card-standard" data-category="mental-health" onclick="showPage('post')">
+          <div class="card-cover-sm warm">🕯️</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="category-pill mental-health">Mental Health</span>
+              <span class="card-date">Apr 7, 2025</span>
+            </div>
+            <h3 class="card-title">Isolation isn't just loneliness. It's the feeling of being untranslatable.</h3>
+            <p class="card-excerpt">What happens when you can't find the words — or the people — to hold what you're carrying.</p>
+            <span class="card-read">Read more →</span>
+          </div>
+        </div>
+
+        <div class="blog-card-standard" data-category="product" onclick="showPage('post')">
+          <div class="card-cover-sm blue">🤖</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="category-pill product">Product</span>
+              <span class="card-date">Mar 31, 2025</span>
+            </div>
+            <h3 class="card-title">Sage isn't a therapist. Here's what it actually does.</h3>
+            <p class="card-excerpt">We made deliberate choices about what Parallel AI should and shouldn't do. Transparency about that matters.</p>
+            <span class="card-read">Read more →</span>
+          </div>
+        </div>
+
+        <div class="blog-card-standard" data-category="community" onclick="showPage('post')">
+          <div class="card-cover-sm" style="background:linear-gradient(135deg,#1e2a1a 0%, #0f180a 100%);">🌱</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="category-pill community" style="border-color:#7a6e50; color:#c8b880;">Community</span>
+              <span class="card-date">Mar 24, 2025</span>
+            </div>
+            <h3 class="card-title">The three modes: how we thought about Seeking, Helping, and Browsing</h3>
+            <p class="card-excerpt">Why we gave users control over how they show up — and why that flexibility was non-negotiable from day one.</p>
+            <span class="card-read">Read more →</span>
+          </div>
+        </div>
+
+        <div class="blog-card-standard" data-category="mental-health" onclick="showPage('post')">
+          <div class="card-cover-sm red">🔥</div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="category-pill mental-health">Mental Health</span>
+              <span class="card-date">Mar 17, 2025</span>
+            </div>
+            <h3 class="card-title">When "just talk to someone" isn't enough — and what actually helps</h3>
+            <p class="card-excerpt">Generic advice about mental health fails because it skips over the specific texture of what people are actually feeling.</p>
+            <span class="card-read">Read more →</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="load-more-row">
+        <button class="btn-ghost">Load more posts</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================
+       PAGE 3: SINGLE POST
+       ================================================ -->
+  <div id="page-post" class="page">
+
+    <div class="post-header">
+      <div class="post-back" onclick="showPage('blog')">← Back to Blog</div>
+      <div class="post-meta-row">
+        <span class="category-pill product">Product</span>
+        <span class="post-date">May 12, 2025</span>
+        <span class="post-read-time">· 6 min read</span>
+      </div>
+      <h1 class="post-title">Why Parallel doesn't have a therapy feature — <em>and never will</em></h1>
+      <p class="post-subtitle">There's a version of this product that could have been a meditation app. Or a CBT tool. Or another platform that funnels you toward a licensed professional. We built something different on purpose.</p>
+    </div>
+
+    <div class="post-cover" style="max-width:none; padding:0 48px; height:auto; display:block;">
+      <div style="max-width:800px; margin:0 auto; height:340px; background:linear-gradient(135deg,#1a2e26 0%,#0f1a14 40%,#1a1a2e 100%); border-radius:16px; overflow:hidden; display:flex; align-items:center; justify-content:center; font-size:5rem; position:relative;">
+        🌿
+        <div style="position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 50% 50%, rgba(74,124,106,0.15) 0%, transparent 70%);"></div>
+      </div>
+    </div>
+
+    <div class="post-body">
+
+      <p>When we started building Parallel, the easiest path would have been to build another mental health app. The market has a template. There's a meditation flow, a mood tracker, maybe some CBT exercises, and a button that says "talk to a therapist." It's a proven format. It raises money. It's defensible.</p>
+
+      <p>We didn't build that. <strong>Not because it's wrong, but because it's already being built — and it still leaves something out.</strong></p>
+
+      <h2>What clinical care can't give you</h2>
+
+      <p>Therapists are valuable. We're not anti-therapy. But even the best therapist is one degree removed from what you're going through. They've studied it. They've sat with others who've experienced it. They can hold space for it. But they haven't lived it.</p>
+
+      <p>There's something that happens when someone says "I know exactly what that feels like" and actually means it. It's different from empathy. It's recognition. And recognition is its own kind of medicine.</p>
+
+      <blockquote>
+        <p>"The most powerful thing you can say to someone in pain isn't 'I understand.' It's 'me too.'"</p>
+      </blockquote>
+
+      <p>Peer support has been quietly doing this work for decades — in AA meetings, in cancer support groups, in online forums that aren't monetized or moderated by anyone with a credential. It works. It just hasn't been designed well.</p>
+
+      <h2>The design decision that shaped everything</h2>
+
+      <p>Early in our process, we asked ourselves: what's the moment that actually helps? Not what looks helpful, not what's easy to build — what actually moves the needle for someone who's struggling?</p>
+
+      <p>The answer kept coming back to the same thing: being met by someone who gets it. Not advised. Not diagnosed. Not referred. Just met.</p>
+
+      <p>That shaped every feature we built:</p>
+
+      <ul>
+        <li>The three-mode system exists because sometimes you need to be heard, sometimes you're ready to give back, and sometimes you're just not ready for either.</li>
+        <li>Venting exists because release has value independent of resolution.</li>
+        <li>The experience finder exists because the language for what you're going through is often still forming.</li>
+        <li>Sage AI exists to support the human connection — not replace it.</li>
+      </ul>
+
+      <div class="post-sage-note">
+        <div class="sage-note-icon">S</div>
+        <div class="sage-note-text">
+          <div class="sage-note-label">A note from Sage</div>
+          Parallel AI is here to help you find words, connect with community, and surface resources when you need them. Sage is always labeled. Always transparent. And never pretending to be what it isn't.
+        </div>
+      </div>
+
+      <h2>What comes next</h2>
+
+      <p>We're not done figuring this out. The platform we're building is a first answer to a hard question — and we expect it to evolve as the community teaches us what actually works.</p>
+
+      <p>What won't change is the core: <strong>Parallel is not therapy. It's the thing that exists alongside it, underneath it, and sometimes before it.</strong> Community. Shared experience. Recognition.</p>
+
+      <p>That's worth building.</p>
+
+      <div class="post-divider"></div>
+
+      <p style="font-size:0.85rem; color:var(--muted);">Written by the Parallel team. If this resonated, join the waitlist — we're launching soon and want the people who get it to help shape the community from day one.</p>
+
+    </div>
+
+    <div class="post-footer">
+      <p class="post-footer-label">Keep reading</p>
+      <div class="related-grid">
+        <div class="related-card" onclick="showPage('post')">
+          <span class="category-pill mental-health" style="font-size:0.65rem;">Mental Health</span>
+          <h4 class="related-title">The difference between venting and processing — and why both matter</h4>
+          <span class="related-date">May 5, 2025</span>
+        </div>
+        <div class="related-card" onclick="showPage('post')">
+          <span class="category-pill product" style="font-size:0.65rem;">Product</span>
+          <h4 class="related-title">Building Venting: why we made a feature that deletes itself</h4>
+          <span class="related-date">Apr 14, 2025</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Page routing
+    function showPage(name) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById('page-' + name).classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Update active nav
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      if (name === 'blog' || name === 'post') {
+        document.getElementById('nav-blog').classList.add('active');
+      }
+    }
+
+    // Category filter
+    function filterPosts(btn, category) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cards = document.querySelectorAll('#postGrid .blog-card-standard');
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.category === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
