@@ -212,22 +212,16 @@
     .hero-stat:last-child { border-right: none; }
 
     .hero-stat-divider {
-      color: var(--sage-light);
-      font-size: 1.2rem;
+      color: var(--border);
+      font-size: 1rem;
       padding: 0 4px;
       flex-shrink: 0;
-    }
-
-    .stat-icon {
-      display: block;
-      font-size: 1.6rem;
-      margin-bottom: 8px;
     }
 
     .stat-num {
       display: block;
       font-family: 'Playfair Display', serif;
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       font-weight: 700;
       color: var(--white);
       margin-bottom: 4px;
@@ -752,6 +746,81 @@
       border-radius: 100px;
     }
 
+    /* ---- VENTING MODE DEMOS ---- */
+    .vent-modes-grid {
+      margin: 24px 0 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .vent-mode-demo {
+      border-radius: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--border);
+    }
+
+    .vent-mode-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--warm-dim);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .vent-mode-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .vent-mode-box {
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      font-style: italic;
+      line-height: 1.5;
+      margin-bottom: 8px;
+    }
+
+    .vent-mode-desc {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* Float */
+    .float-demo { background: rgba(74,124,106,0.06); border-color: rgba(74,124,106,0.2); }
+    .float-box { background: rgba(74,124,106,0.1); color: var(--warm); }
+    .float-text { animation: floatFade 4s ease-in-out infinite; display: inline-block; }
+    @keyframes floatFade {
+      0%, 40% { opacity: 1; }
+      70%, 100% { opacity: 0.15; }
+    }
+
+    /* Heartbeat */
+    .heartbeat-demo { background: rgba(201,160,160,0.06); border-color: rgba(201,160,160,0.2); }
+    .heartbeat-box { background: rgba(201,160,160,0.1); color: #e8c8c8; }
+    .heartbeat-text { animation: heartPulse 1.8s ease-in-out infinite; display: inline-block; }
+    @keyframes heartPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(0.98); }
+    }
+
+    /* Burn */
+    .burn-demo { background: rgba(192,57,43,0.06); border-color: rgba(192,57,43,0.2); }
+    .burn-box { background: rgba(192,57,43,0.1); color: #e8a090; }
+    .burn-text { animation: burnAway 5s ease-in forwards infinite; display: inline-block; }
+    @keyframes burnAway {
+      0%, 30% { opacity: 1; filter: blur(0px); }
+      80%, 100% { opacity: 0; filter: blur(3px); }
+    }
+
     /* ---- VENTING DEMO ---- */
     .vent-demo {
       margin: 24px 0 16px;
@@ -1165,30 +1234,27 @@
   <!-- HERO -->
   <section class="hero" style="max-width:none; padding-left:48px; padding-right:48px;">
     <div class="hero-bg"></div>
-    <p class="hero-eyebrow">Peer Support · Community · Real Experience</p>
-    <h1 class="hero-headline">Support that <em>actually</em> gets it.</h1>
-    <p class="hero-sub">Parallel connects you with people who've lived what you're living — not algorithms, not diagnoses. Community built on shared experience.</p>
+    <p class="hero-eyebrow">Not therapy. Not a hotline. Community.</p>
+    <h1 class="hero-headline">You don't have to explain yourself here.</h1>
+    <p class="hero-sub">Parallel connects you with people who've lived what you're living — not algorithms, not diagnoses. Just people who actually get it.</p>
     <div class="hero-actions">
-      <a href="pricing.html" class="btn-primary">Join the waitlist</a>
+      <a href="pricing.html" class="btn-primary">Find your Parallel</a>
       <a href="#how" class="btn-ghost">See how it works</a>
     </div>
     <div class="hero-stat-row">
       <div class="hero-stat">
-        <span class="stat-icon">🙋</span>
         <span class="stat-num">Seek</span>
         <span class="stat-label">Find people who've been there</span>
       </div>
-      <div class="hero-stat-divider">→</div>
+      <div class="hero-stat-divider">—</div>
       <div class="hero-stat">
-        <span class="stat-icon">🤝</span>
         <span class="stat-num">Help</span>
         <span class="stat-label">Give back from lived experience</span>
       </div>
-      <div class="hero-stat-divider">→</div>
+      <div class="hero-stat-divider">—</div>
       <div class="hero-stat">
-        <span class="stat-icon">👀</span>
         <span class="stat-num">Browse</span>
-        <span class="stat-label">Just not ready yet? That's okay.</span>
+        <span class="stat-label">Not ready yet? That's okay.</span>
       </div>
     </div>
   </section>
@@ -1219,57 +1285,56 @@
     </div>
   </div>
 
-  <!-- HOW IT WORKS -->
-  <section id="how">
-    <p class="section-label reveal">How it works</p>
-    <h2 class="section-headline reveal">You choose <em>how</em> you show up.</h2>
-    <p class="section-body reveal">No forced roles. Move between modes as you need. Some days you need the room. Some days you are the room.</p>
-
-    <div class="hiw-grid reveal">
-      <div class="hiw-card">
-        <div class="hiw-num">01</div>
-        <div class="hiw-title">Seeking</div>
-        <div class="hiw-desc">You need to be heard. Share what you're going through, find people who've been there, and get responses rooted in lived experience — not advice from a stranger.</div>
-        <span class="hiw-badge">I need support</span>
-      </div>
-      <div class="hiw-card">
-        <div class="hiw-num">02</div>
-        <div class="hiw-title">Helping</div>
-        <div class="hiw-desc">You've been through it and you want to give back. Your experience is the credential. No certification required. Just presence and truth.</div>
-        <span class="hiw-badge">I'm ready to help</span>
-      </div>
-      <div class="hiw-card">
-        <div class="hiw-num">03</div>
-        <div class="hiw-title">Browsing</div>
-        <div class="hiw-desc">Not ready to post? That's okay. Read stories, absorb community wisdom, and get a feel for the space before you decide how you want to engage.</div>
-        <span class="hiw-badge">Just looking</span>
-      </div>
-    </div>
-  </section>
-
   <!-- FEATURES -->
-  <section id="features" style="padding-top:0;">
+  <section id="features">
     <p class="section-label reveal">Built different</p>
     <h2 class="section-headline reveal">Every feature is a <em>decision</em> about you.</h2>
 
     <div class="features-layout reveal">
       <div class="feature-card tall">
-        <div class="feature-icon">🌊</div>
         <div class="feature-title">Venting — sacred space</div>
         <div class="feature-desc">Sometimes you just need to say it. No feedback. No solutions. No tone scanning. Just you and the release — then it's gone.</div>
-        <!-- Animated venting demo -->
-        <div class="vent-demo">
-          <div class="vent-box">
-            <span class="vent-cursor" id="ventText"></span>
+
+        <!-- Three mode demos -->
+        <div class="vent-modes-grid">
+
+          <div class="vent-mode-demo float-demo">
+            <div class="vent-mode-label">
+              <span class="vent-mode-dot" style="background:var(--sage-light);"></span>
+              Float
+            </div>
+            <div class="vent-mode-box float-box">
+              <span class="float-text">I just need to say this out loud...</span>
+            </div>
+            <div class="vent-mode-desc">Fades out softly. Gentle release.</div>
           </div>
-          <div class="vent-modes">
-            <span class="vent-mode active">Float</span>
-            <span class="vent-mode">Heartbeat</span>
-            <span class="vent-mode">Burn</span>
+
+          <div class="vent-mode-demo heartbeat-demo">
+            <div class="vent-mode-label">
+              <span class="vent-mode-dot" style="background:#c9a0a0;"></span>
+              Heartbeat
+            </div>
+            <div class="vent-mode-box heartbeat-box">
+              <span class="heartbeat-text">I'm more scared than I let on.</span>
+            </div>
+            <div class="vent-mode-desc">Pulses with your rhythm. Then gone.</div>
           </div>
+
+          <div class="vent-mode-demo burn-demo">
+            <div class="vent-mode-label">
+              <span class="vent-mode-dot" style="background:#c0392b;"></span>
+              Burn
+            </div>
+            <div class="vent-mode-box burn-box">
+              <span class="burn-text">I'm done pretending I'm okay.</span>
+            </div>
+            <div class="vent-mode-desc">Burns away. Nothing left behind.</div>
+          </div>
+
         </div>
-        <div class="feature-tag">Float · Heartbeat · Burn</div>
+        <div class="feature-tag" style="margin-top:20px;">Free: Float only &nbsp;·&nbsp; Parallel+: All modes</div>
       </div>
+
       <div class="feature-card">
         <div class="feature-icon">🧠</div>
         <div class="feature-title">SmartTextBox</div>
