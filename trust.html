@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trust — Parallel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #faf6f0;
+      --off-black: #f5efe6;
+      --card: #fffdf9;
+      --border: #e8ddd0;
+      --sage: #3d6b59;
+      --sage-light: #4a7c6a;
+      --sage-glow: rgba(61, 107, 89, 0.12);
+      --warm: #5a4733;
+      --warm-dim: #8b7355;
+      --white: #2e2318;
+      --muted: #a89880;
+      --red-accent: #c0392b;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 22px 48px;
+      background: rgba(250,246,240,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--sage-light); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--warm-dim);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active { color: var(--white); }
+
+    .nav-cta {
+      background: var(--sage) !important;
+      color: #fff !important;
+      padding: 9px 22px !important;
+      border-radius: 100px;
+      text-transform: none !important;
+      letter-spacing: 0.02em !important;
+      font-size: 0.875rem !important;
+    }
+
+    /* HERO */
+    .trust-hero {
+      padding: 140px 48px 80px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .page-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--sage-light);
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .trust-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      color: var(--white);
+      line-height: 1.15;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .trust-headline em {
+      font-style: italic;
+      color: var(--sage-light);
+    }
+
+    .trust-intro {
+      font-size: 1.1rem;
+      color: var(--warm-dim);
+      line-height: 1.8;
+      max-width: 640px;
+      margin-bottom: 16px;
+    }
+
+    /* SECTION */
+    .trust-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 64px 48px;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--sage-light);
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+
+    .section-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      color: var(--white);
+      line-height: 1.25;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: -0.01em;
+    }
+
+    .section-headline em {
+      font-style: italic;
+      color: var(--sage-light);
+    }
+
+    .section-body {
+      font-size: 1rem;
+      color: var(--warm-dim);
+      line-height: 1.8;
+      max-width: 640px;
+    }
+
+    /* PSYCHOLOGY PILLARS */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .pillar-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 24px;
+      transition: box-shadow 0.2s;
+    }
+
+    .pillar-card:hover {
+      box-shadow: 0 4px 24px rgba(61,107,89,0.08);
+    }
+
+    .pillar-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      color: var(--sage-light);
+      opacity: 0.4;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .pillar-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 10px;
+    }
+
+    .pillar-desc {
+      font-size: 0.875rem;
+      color: var(--warm-dim);
+      line-height: 1.7;
+    }
+
+    .pillar-research {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    /* TIER TIMELINE */
+    .tier-timeline {
+      margin-top: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .tier-row {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 0 32px;
+      position: relative;
+    }
+
+    .tier-spine {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .tier-node {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      border: 2px solid var(--border);
+      background: var(--card);
+      position: relative;
+      z-index: 2;
+      flex-shrink: 0;
+    }
+
+    .tier-line {
+      width: 2px;
+      flex: 1;
+      background: var(--border);
+      min-height: 40px;
+    }
+
+    .tier-row:last-child .tier-line {
+      display: none;
+    }
+
+    .tier-content {
+      padding: 4px 0 48px;
+    }
+
+    .tier-badge-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .tier-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .tier-level {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--off-black);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+      border-radius: 100px;
+    }
+
+    .tier-desc {
+      font-size: 0.95rem;
+      color: var(--warm-dim);
+      line-height: 1.7;
+      margin-bottom: 16px;
+      max-width: 560px;
+    }
+
+    .tier-how {
+      margin-bottom: 16px;
+    }
+
+    .tier-how-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sage-light);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .tier-how-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tier-how-item {
+      font-size: 0.82rem;
+      color: var(--warm);
+      background: var(--off-black);
+      border: 1px solid var(--border);
+      padding: 5px 14px;
+      border-radius: 100px;
+    }
+
+    .tier-unlocks {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+    }
+
+    .tier-unlocks-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--sage-light);
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .unlock-list {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .unlock-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.875rem;
+      color: var(--warm-dim);
+      line-height: 1.5;
+    }
+
+    .unlock-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--sage-light);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    /* TRUST PRINCIPLES */
+    .principles-list {
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .principle-row {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      padding: 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .principle-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--off-black);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .principle-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .principle-body {
+      font-size: 0.875rem;
+      color: var(--warm-dim);
+      line-height: 1.6;
+    }
+
+    /* PROMISE BLOCK */
+    .promise-block {
+      background: linear-gradient(135deg, var(--off-black), var(--card));
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px;
+      margin-top: 40px;
+      text-align: center;
+    }
+
+    .promise-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+      color: var(--white);
+      line-height: 1.5;
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .promise-sub {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 500px;
+      margin: 0 auto 28px;
+    }
+
+    .promise-cta {
+      display: inline-block;
+      background: var(--sage);
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 100px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      transition: background 0.2s;
+    }
+
+    .promise-cta:hover { background: var(--sage-light); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: none;
+    }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--warm-dim);
+      text-decoration: none;
+    }
+
+    .footer-logo span { color: var(--sage-light); }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--white); }
+
+    /* REVEAL */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      .trust-hero, .trust-section { padding-left: 24px; padding-right: 24px; }
+      .pillars-grid { grid-template-columns: 1fr; }
+      .tier-row { grid-template-columns: 56px 1fr; gap: 0 16px; }
+      .promise-block { padding: 32px 24px; }
+      footer { flex-direction: column; gap: 20px; text-align: center; padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">Parallel<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html#how">How it works</a></li>
+      <li><a href="index.html#features">Features</a></li>
+      <li><a href="index.html#sage">Sage AI</a></li>
+      <li><a href="index.html#about">About</a></li>
+      <li><a href="parallel-blog.html">Blog</a></li>
+      <li><a href="trust.html" class="active">Trust</a></li>
+      <li><a href="pricing.html" class="nav-cta">Join waitlist</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="trust-hero">
+    <p class="page-label">The psychology of Parallel</p>
+    <h1 class="trust-headline">Trust isn't given.<br><em>It's built.</em></h1>
+    <p class="trust-intro">
+      Every decision we've made — how you join, how you grow, what you unlock, how Sage behaves — is grounded in one question: what does it actually take for a human being to feel safe enough to be honest?
+    </p>
+    <p class="trust-intro" style="margin-top: 12px;">
+      This page explains the psychology behind Parallel's trust architecture. Not as a marketing document. As a commitment.
+    </p>
+  </div>
+
+  <!-- WHY TRUST IS HARD -->
+  <div class="trust-section reveal">
+    <p class="section-label">The problem</p>
+    <h2 class="section-headline">Most platforms ask for vulnerability<br>before they've <em>earned</em> it.</h2>
+    <p class="section-body">
+      You land on a mental health platform and the first thing it asks is: what's wrong with you? Before you know who else is here. Before you know if your words are safe. Before you've seen evidence that anyone actually gets it.
+    </p>
+    <p class="section-body" style="margin-top: 16px;">
+      That's backwards. Trust is built through small, safe moments of disclosure — not one massive leap. Parallel is designed around that truth.
+    </p>
+
+    <div class="pillars-grid">
+      <div class="pillar-card reveal">
+        <div class="pillar-number">01</div>
+        <div class="pillar-title">Anonymity by default</div>
+        <div class="pillar-desc">You never have to share your name, face, or any identifying information. Anonymity removes the social cost of honesty — the fear of being judged by people who know you.</div>
+        <div class="pillar-research">Research shows anonymous disclosure reduces shame and increases willingness to seek help by up to 40% in peer support contexts.</div>
+      </div>
+      <div class="pillar-card reveal">
+        <div class="pillar-number">02</div>
+        <div class="pillar-title">Earned disclosure</div>
+        <div class="pillar-desc">You share what you're comfortable with, when you're ready. Identifiers are optional. Your profile is yours to build at your own pace. Nothing is required upfront beyond your age range.</div>
+        <div class="pillar-research">Gradual self-disclosure — sharing incrementally as trust builds — is the single strongest predictor of long-term relationship depth in peer support research.</div>
+      </div>
+      <div class="pillar-card reveal">
+        <div class="pillar-number">03</div>
+        <div class="pillar-title">Community accountability</div>
+        <div class="pillar-desc">Trust isn't just about what Parallel promises — it's about who else is here. The tier system ensures that the people with the most access have earned it through demonstrated care.</div>
+        <div class="pillar-research">In communities with visible reputation systems, members report significantly higher trust in responses they receive — because they can see the track record behind the person.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIER LEVELS -->
+  <div class="trust-section reveal">
+    <p class="section-label">How trust grows</p>
+    <h2 class="section-headline">Five levels. <em>One arc.</em></h2>
+    <p class="section-body">
+      You don't unlock trust on Parallel by being here longer. You earn it by showing up — consistently, carefully, and with genuine care for the people around you. Here's how the journey works.
+    </p>
+
+    <div class="tier-timeline">
+
+      <!-- SEEDLING -->
+      <div class="tier-row">
+        <div class="tier-spine">
+          <div class="tier-node">&#127807;</div>
+          <div class="tier-line"></div>
+        </div>
+        <div class="tier-content">
+          <div class="tier-badge-label">
+            <span class="tier-name">Seedling</span>
+            <span class="tier-level">Level 1</span>
+          </div>
+          <p class="tier-desc">
+            You just arrived. You're getting a feel for the space — reading posts, understanding the community, figuring out if this is a place you can trust. That's exactly right. You don't have to do anything yet.
+          </p>
+          <div class="tier-how">
+            <p class="tier-how-label">How you get here</p>
+            <div class="tier-how-items">
+              <span class="tier-how-item">Complete onboarding</span>
+              <span class="tier-how-item">Choose your path</span>
+              <span class="tier-how-item">That's it</span>
+            </div>
+          </div>
+          <div class="tier-unlocks">
+            <p class="tier-unlocks-label">What you can do</p>
+            <div class="unlock-list">
+              <div class="unlock-item"><div class="unlock-dot"></div>Read all posts in the community</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>React to posts that resonate with you</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Post your own experience (goes to 24hr review queue)</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Access Sage for guidance and support</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Use the venting feature (Float mode, 15 seconds)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROOTED -->
+      <div class="tier-row">
+        <div class="tier-spine">
+          <div class="tier-node">&#127807;&#127807;</div>
+          <div class="tier-line"></div>
+        </div>
+        <div class="tier-content">
+          <div class="tier-badge-label">
+            <span class="tier-name">Rooted</span>
+            <span class="tier-level">Level 2</span>
+          </div>
+          <p class="tier-desc">
+            You've started showing up. You've responded to others, shared your own experience, and demonstrated that you understand what this community is for. People are starting to find you — and trust you.
+          </p>
+          <div class="tier-how">
+            <p class="tier-how-label">How you get here</p>
+            <div class="tier-how-items">
+              <span class="tier-how-item">Post at least once</span>
+              <span class="tier-how-item">Respond to at least 3 posts</span>
+              <span class="tier-how-item">Receive at least 2 helpful ratings</span>
+              <span class="tier-how-item">No community violations</span>
+            </div>
+          </div>
+          <div class="tier-unlocks">
+            <p class="tier-unlocks-label">What unlocks</p>
+            <div class="unlock-list">
+              <div class="unlock-item"><div class="unlock-dot"></div>Posts go to 2-4hr review instead of 24hrs</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>You appear in Parallel matching — people can find you</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Respond to other members' posts</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Receive private messages from your parallels</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Set post alerts — get notified when someone responds to a post you care about</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEADY -->
+      <div class="tier-row">
+        <div class="tier-spine">
+          <div class="tier-node">&#127795;</div>
+          <div class="tier-line"></div>
+        </div>
+        <div class="tier-content">
+          <div class="tier-badge-label">
+            <span class="tier-name">Steady</span>
+            <span class="tier-level">Level 3</span>
+          </div>
+          <p class="tier-desc">
+            You're consistently present. When someone posts something hard, you show up. The community has started to recognize your voice — not because you post the most, but because what you say lands. You've proven you can hold sensitive topics with care.
+          </p>
+          <div class="tier-how">
+            <p class="tier-how-label">How you get here</p>
+            <div class="tier-how-items">
+              <span class="tier-how-item">10+ responses given</span>
+              <span class="tier-how-item">Avg helpful rating above 4.0</span>
+              <span class="tier-how-item">Active for at least 30 days</span>
+              <span class="tier-how-item">Completed at least 2 Support Center guides</span>
+            </div>
+          </div>
+          <div class="tier-unlocks">
+            <p class="tier-unlocks-label">What unlocks</p>
+            <div class="unlock-list">
+              <div class="unlock-item"><div class="unlock-dot"></div>Access to sensitive category posts — grief, trauma, crisis-adjacent content</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>15-30 minute review queue</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Your activity tab — full history of your posts, responses, and connections</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Sage AI summary of your impact — patterns in feedback you've received and given</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Ability to flag posts for Sage review</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRUSTED -->
+      <div class="tier-row">
+        <div class="tier-spine">
+          <div class="tier-node">&#11088;</div>
+          <div class="tier-line"></div>
+        </div>
+        <div class="tier-content">
+          <div class="tier-badge-label">
+            <span class="tier-name">Trusted</span>
+            <span class="tier-level">Level 4</span>
+          </div>
+          <p class="tier-desc">
+            The community turns to you. Not because you have answers, but because people who've been through hard things know you understand. Your presence has changed how people here experience this place. That's rare. That matters.
+          </p>
+          <div class="tier-how">
+            <p class="tier-how-label">How you get here</p>
+            <div class="tier-how-items">
+              <span class="tier-how-item">25+ responses given</span>
+              <span class="tier-how-item">Avg helpful rating above 4.5</span>
+              <span class="tier-how-item">At least 5 members have listed you as their parallel</span>
+              <span class="tier-how-item">Active for 90+ days</span>
+            </div>
+          </div>
+          <div class="tier-unlocks">
+            <p class="tier-unlocks-label">What unlocks</p>
+            <div class="unlock-list">
+              <div class="unlock-item"><div class="unlock-dot"></div>Near-instant post review</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Priority matching — you appear first in relevant parallel searches</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Ability to co-facilitate community discussions</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Emergency feature — members in your parallel can reach you directly in a hard moment</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Invitation to apply for Guide status</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PILLAR -->
+      <div class="tier-row">
+        <div class="tier-spine">
+          <div class="tier-node">&#128293;</div>
+          <div class="tier-line"></div>
+        </div>
+        <div class="tier-content">
+          <div class="tier-badge-label">
+            <span class="tier-name">Pillar</span>
+            <span class="tier-level">Level 5 — Guide</span>
+          </div>
+          <p class="tier-desc">
+            You are the room. Guides are the people Parallel trusts most — not because they have credentials, but because they've proven, through hundreds of moments, that they know how to hold a community. Guides can facilitate paid cohorts, lead group experiences, and shape the culture of this space.
+          </p>
+          <div class="tier-how">
+            <p class="tier-how-label">How you get here</p>
+            <div class="tier-how-items">
+              <span class="tier-how-item">Invitation from the Parallel team</span>
+              <span class="tier-how-item">Review of your full history</span>
+              <span class="tier-how-item">Brief interview</span>
+              <span class="tier-how-item">Agreement to Guide standards</span>
+            </div>
+          </div>
+          <div class="tier-unlocks">
+            <p class="tier-unlocks-label">What unlocks</p>
+            <div class="unlock-list">
+              <div class="unlock-item"><div class="unlock-dot"></div>Facilitate paid cohorts — small group experiences (6-8 people, 8 weeks)</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>70% of cohort revenue goes directly to you</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Guide profile — featured in community spotlight</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Direct input into platform decisions</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>Access to the full Sage API for your cohorts</div>
+              <div class="unlock-item"><div class="unlock-dot"></div>You helped build this. This is yours too.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TRUST PRINCIPLES -->
+  <div class="trust-section reveal">
+    <p class="section-label">What we promise</p>
+    <h2 class="section-headline">The rules we built<br>the whole thing <em>around.</em></h2>
+    <p class="section-body">These aren't policies. They're the architecture.</p>
+
+    <div class="principles-list">
+      <div class="principle-row reveal">
+        <div class="principle-icon">&#128274;</div>
+        <div>
+          <div class="principle-title">Your data belongs to you</div>
+          <div class="principle-body">We never sell, share, or monetize your personal information. The only exception is an immediate threat to life — and even then, we do what's right, not what's convenient. No ads. No data brokers. Ever.</div>
+        </div>
+      </div>
+      <div class="principle-row reveal">
+        <div class="principle-icon">&#128065;</div>
+        <div>
+          <div class="principle-title">Anonymity is structural, not optional</div>
+          <div class="principle-body">You can never be identified by another member without your explicit consent. Your real name, location, and identity are never required and never stored in a way that connects to your posts.</div>
+        </div>
+      </div>
+      <div class="principle-row reveal">
+        <div class="principle-icon">&#129504;</div>
+        <div>
+          <div class="principle-title">Sage is always labeled</div>
+          <div class="principle-body">Every response from Sage is clearly marked "Parallel AI." There is no scenario in which AI pretends to be a human on this platform. Trust requires transparency — always.</div>
+        </div>
+      </div>
+      <div class="principle-row reveal">
+        <div class="principle-icon">&#128994;</div>
+        <div>
+          <div class="principle-title">No one is left without support</div>
+          <div class="principle-body">Every post gets a response. Every crisis gets a route to real help. There is always someone here — Sage first, then your community, then Guides if needed. You will not be abandoned.</div>
+        </div>
+      </div>
+      <div class="principle-row reveal">
+        <div class="principle-icon">&#9878;</div>
+        <div>
+          <div class="principle-title">Style is never the issue</div>
+          <div class="principle-body">How you talk is yours. Slang, AAVE, casual language, regional expressions — Sage never flags these. The only thing that matters is whether what you're saying could harm someone. Not how you say it.</div>
+        </div>
+      </div>
+      <div class="principle-row reveal">
+        <div class="principle-icon">&#128149;</div>
+        <div>
+          <div class="principle-title">Venting is sacred</div>
+          <div class="principle-body">The venting feature has no tone scanner. No Sage feedback. No moderation. It is the one space on Parallel that is entirely yours — between you and you. We don't touch it.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLOSING PROMISE -->
+  <div class="trust-section reveal">
+    <div class="promise-block">
+      <p class="promise-quote">"The most powerful thing you can say to someone in pain is: me too."</p>
+      <p class="promise-sub">Parallel exists to create the conditions where that moment can happen. Safely. Honestly. Without anyone having to explain themselves first.</p>
+      <a href="pricing.html" class="promise-cta">Join the waitlist</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="index.html" class="footer-logo">Parallel<span>.</span></a>
+    <p style="font-size:0.78rem; color:var(--muted);">Not therapy. Community. &copy;2025 Parallel</p>
+    <ul class="footer-links">
+      <li><a href="#">Privacy</a></li>
+      <li><a href="#">Terms</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </footer>
+
+  <script>
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
