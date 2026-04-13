@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How It Works — Parallel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #faf6f0;
+      --bg2: #f5efe6;
+      --card: #fffdf9;
+      --border: #e8ddd0;
+      --sage: #3d6b59;
+      --sage-light: #4a7c6a;
+      --warm: #5a4733;
+      --warm-dim: #8b7355;
+      --text: #2e2318;
+      --muted: #a89880;
+      --app-bg: #faf6f0;
+      --app-card: #fffdf9;
+      --app-border: #ede8df;
+      --app-accent: #c4956a;
+      --app-sage: #87a878;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; line-height: 1.7; overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 48px;
+      background: rgba(250,246,240,0.95); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--text); text-decoration: none; }
+    .nav-logo span { color: var(--sage-light); }
+    .nav-right { display: flex; align-items: center; gap: 28px; }
+    .nav-back { font-size: 0.85rem; color: var(--muted); text-decoration: none; display: flex; align-items: center; gap: 6px; transition: color 0.2s; }
+    .nav-back:hover { color: var(--text); }
+    .nav-cta { background: var(--sage); color: #fff; padding: 9px 22px; border-radius: 100px; text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: background 0.2s; }
+    .nav-cta:hover { background: var(--sage-light); }
+
+    /* HERO */
+    .page-hero {
+      padding: 120px 48px 60px;
+      max-width: 760px; margin: 0 auto;
+      text-align: center;
+    }
+    .page-label { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--sage-light); margin-bottom: 16px; font-weight: 500; }
+    .page-headline { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 5vw, 3.6rem); color: var(--text); line-height: 1.15; font-weight: 700; margin-bottom: 20px; letter-spacing: -0.02em; }
+    .page-headline em { font-style: italic; color: var(--sage-light); }
+    .page-sub { font-size: 1.05rem; color: var(--warm-dim); line-height: 1.8; max-width: 560px; margin: 0 auto; }
+
+    /* FEATURE NAV TABS */
+    .feature-nav {
+      position: sticky; top: 57px; z-index: 100;
+      background: rgba(250,246,240,0.97); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 48px;
+      display: flex; gap: 0; overflow-x: auto;
+    }
+    .feature-nav::-webkit-scrollbar { display: none; }
+    .fnav-btn {
+      padding: 16px 20px; border: none; background: transparent;
+      font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+      color: var(--muted); cursor: pointer; white-space: nowrap;
+      border-bottom: 2px solid transparent; transition: all 0.2s;
+      font-weight: 400;
+    }
+    .fnav-btn:hover { color: var(--text); }
+    .fnav-btn.active { color: var(--sage); border-bottom-color: var(--sage); font-weight: 500; }
+
+    /* FEATURE SECTIONS */
+    .feature-section { display: none; padding: 64px 48px; max-width: 1100px; margin: 0 auto; }
+    .feature-section.active { display: block; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .feature-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+    .feature-layout.reverse { direction: rtl; }
+    .feature-layout.reverse > * { direction: ltr; }
+    .feature-layout.wide { grid-template-columns: 1fr; max-width: 800px; margin: 0 auto; }
+
+    .feature-text .label { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sage-light); font-weight: 500; margin-bottom: 12px; }
+    .feature-text h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 3vw, 2.2rem); color: var(--text); font-weight: 700; line-height: 1.25; margin-bottom: 16px; letter-spacing: -0.01em; }
+    .feature-text h2 em { font-style: italic; color: var(--sage-light); }
+    .feature-text p { font-size: 0.95rem; color: var(--warm-dim); line-height: 1.8; margin-bottom: 14px; }
+    .feature-bullets { list-style: none; margin-top: 20px; display: flex; flex-direction: column; gap: 10px; }
+    .feature-bullets li { display: flex; align-items: flex-start; gap: 10px; font-size: 0.875rem; color: var(--warm-dim); line-height: 1.5; }
+    .feature-bullets li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--sage-light); flex-shrink: 0; margin-top: 6px; }
+    .coming-soon { display: inline-flex; align-items: center; gap: 6px; background: var(--bg2); border: 1px solid var(--border); border-radius: 100px; padding: 4px 12px; font-size: 0.72rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+
+    /* PHONE FRAME */
+    .phone-frame {
+      width: 280px; margin: 0 auto;
+      background: #1a1a1a; border-radius: 44px;
+      padding: 14px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.12);
+      position: relative;
+    }
+    .phone-notch {
+      width: 100px; height: 28px; background: #1a1a1a;
+      border-radius: 0 0 18px 18px; margin: 0 auto 8px;
+      position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+      z-index: 10;
+    }
+    .phone-screen {
+      background: var(--app-bg); border-radius: 32px;
+      overflow: hidden; min-height: 560px;
+      position: relative;
+    }
+
+    /* BROWSER FRAME */
+    .browser-frame {
+      background: #e8e0d4; border-radius: 12px;
+      box-shadow: 0 16px 60px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+    .browser-bar {
+      background: #d4cabb; padding: 10px 16px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .browser-dots { display: flex; gap: 5px; }
+    .browser-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .browser-url {
+      flex: 1; background: rgba(255,255,255,0.5); border-radius: 6px;
+      padding: 4px 12px; font-size: 0.7rem; color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+    }
+    .browser-content { background: var(--app-bg); min-height: 360px; overflow: hidden; }
+
+    /* ── APP UI COMPONENTS ── */
+    .app-nav {
+      background: var(--app-bg); border-bottom: 1px solid var(--app-border);
+      padding: 12px 16px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .app-logo { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: #3a2e24; font-weight: 600; }
+    .app-search { flex: 1; margin: 0 10px; background: #f5f0eb; border-radius: 20px; padding: 5px 12px; font-size: 0.65rem; color: var(--muted); }
+    .app-avatar { width: 24px; height: 24px; border-radius: 50%; background: var(--app-accent); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: white; font-weight: 700; }
+
+    .mode-pill {
+      display: inline-flex; background: #f0ebe3; border-radius: 100px;
+      padding: 3px; gap: 2px; margin: 8px 16px;
+    }
+    .mode-opt {
+      padding: 4px 12px; border-radius: 100px; font-size: 0.62rem;
+      font-weight: 600; cursor: pointer; transition: all 0.15s;
+      color: var(--muted);
+    }
+    .mode-opt.active { background: white; color: #3a2e24; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+    .post-card {
+      margin: 6px 12px; background: white; border-radius: 12px;
+      padding: 12px; border: 1px solid var(--app-border);
+    }
+    .post-tag { display: inline-block; background: #fff8f2; border: 1px solid #f0d8c0; border-radius: 100px; padding: 2px 8px; font-size: 0.55rem; color: var(--app-accent); font-weight: 600; margin-bottom: 6px; }
+    .post-body { font-size: 0.65rem; color: #4a3f35; line-height: 1.6; margin-bottom: 8px; }
+    .post-meta { display: flex; align-items: center; gap: 8px; }
+    .post-parallels { font-size: 0.55rem; color: var(--muted); }
+    .post-btn { font-size: 0.55rem; color: var(--app-accent); background: #fff8f2; border: 1px solid #f0d0a0; border-radius: 100px; padding: 3px 8px; cursor: pointer; }
+
+    .sage-msg {
+      margin: 8px 12px; background: linear-gradient(135deg, #f0f7ee, #e8f0e4);
+      border: 1px solid #b8d8a8; border-radius: 12px; padding: 10px 12px;
+    }
+    .sage-label { font-size: 0.52rem; color: #4a6b42; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+    .sage-dot { width: 5px; height: 5px; border-radius: 50%; background: #87a878; }
+    .sage-text { font-size: 0.62rem; color: #3a5a32; line-height: 1.6; }
+
+    /* VENTING UI */
+    .vent-screen {
+      background: #080808; min-height: 560px; display: flex;
+      flex-direction: column; align-items: center; justify-content: center;
+      padding: 24px; position: relative;
+    }
+    .vent-privacy { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); font-size: 0.5rem; color: #2a2020; letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
+    .vent-word { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1rem; color: rgba(200,180,160,0.7); position: absolute; pointer-events: none; animation: floatUp 3s ease forwards; }
+    @keyframes floatUp { 0% { opacity: 0.8; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
+    .vent-input-area { position: absolute; bottom: 20px; left: 12px; right: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px 12px; }
+    .vent-hint { font-size: 0.5rem; color: #3a3030; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+    .vent-cursor { width: 2px; height: 14px; background: #c4956a; animation: blink 1s step-end infinite; display: inline-block; }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .vent-timer { position: absolute; top: 16px; right: 16px; }
+    .vent-mode-btns { display: flex; gap: 6px; margin-bottom: 20px; }
+    .vent-mode-btn { padding: 5px 12px; border-radius: 100px; font-size: 0.55rem; font-weight: 700; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: rgba(200,180,160,0.5); cursor: pointer; transition: all 0.15s; }
+    .vent-mode-btn.active { background: rgba(196,149,106,0.2); border-color: rgba(196,149,106,0.4); color: #c4956a; }
+
+    /* DM UI */
+    .dm-screen { background: var(--app-bg); min-height: 480px; display: flex; flex-direction: column; }
+    .dm-header { background: white; border-bottom: 1px solid var(--app-border); padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
+    .dm-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #87a878, #4a6b42); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: white; font-weight: 700; flex-shrink: 0; }
+    .dm-name { font-size: 0.72rem; font-weight: 700; color: #3a2e24; }
+    .dm-parallel-tag { font-size: 0.52rem; color: var(--muted); }
+    .dm-messages { flex: 1; padding: 12px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; }
+    .dm-msg { max-width: 75%; padding: 8px 12px; border-radius: 16px; font-size: 0.62rem; line-height: 1.5; }
+    .dm-msg.them { background: white; border: 1px solid var(--app-border); color: #4a3f35; border-bottom-left-radius: 4px; align-self: flex-start; }
+    .dm-msg.me { background: #3a2e24; color: #f0ece4; border-bottom-right-radius: 4px; align-self: flex-end; }
+    .dm-timestamp { font-size: 0.48rem; color: var(--muted); text-align: center; }
+    .dm-parallel-badge { background: #f0f7ee; border: 1px solid #b8d8a8; border-radius: 8px; padding: 6px 10px; margin: 0 12px 8px; font-size: 0.55rem; color: #4a6b42; display: flex; align-items: center; gap: 5px; }
+    .dm-input-row { padding: 8px 12px; border-top: 1px solid var(--app-border); display: flex; gap: 6px; align-items: center; background: white; }
+    .dm-input { flex: 1; background: #f5f0eb; border-radius: 20px; padding: 6px 12px; font-size: 0.6rem; color: var(--muted); border: none; outline: none; }
+    .dm-send { width: 26px; height: 26px; border-radius: 50%; background: var(--sage); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+
+    /* MATCHING UI */
+    .match-screen { background: var(--app-bg); padding: 16px; }
+    .match-header { text-align: center; margin-bottom: 16px; }
+    .match-title { font-family: 'Playfair Display', serif; font-size: 0.9rem; color: #3a2e24; margin-bottom: 4px; }
+    .match-sub { font-size: 0.6rem; color: var(--muted); }
+    .thread-graphic { margin: 16px auto; width: 200px; height: 80px; position: relative; }
+    .thread-line { position: absolute; height: 2px; background: linear-gradient(90deg, transparent, #87a878, #c4956a); border-radius: 2px; }
+    .match-card { background: white; border: 1px solid var(--app-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .match-icon { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #87a878, #4a6b42); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: white; }
+    .match-info { flex: 1; }
+    .match-name { font-size: 0.65rem; font-weight: 700; color: #3a2e24; margin-bottom: 2px; }
+    .match-exp { font-size: 0.55rem; color: var(--muted); }
+    .match-connect { font-size: 0.55rem; color: var(--app-accent); background: #fff8f2; border: 1px solid #f0d0a0; border-radius: 100px; padding: 3px 8px; cursor: pointer; white-space: nowrap; }
+
+    /* TIER UI */
+    .tier-screen { background: var(--app-bg); padding: 16px; }
+    .tier-progress-header { margin-bottom: 16px; }
+    .tier-current { display: flex; align-items: center; gap: 10px; background: white; border: 1px solid var(--app-border); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; }
+    .tier-emoji-large { font-size: 1.4rem; }
+    .tier-current-name { font-size: 0.75rem; font-weight: 700; color: #3a2e24; }
+    .tier-current-sub { font-size: 0.55rem; color: var(--muted); }
+    .tier-progress-bar { height: 4px; background: #f0ebe3; border-radius: 100px; margin: 6px 0; overflow: hidden; }
+    .tier-progress-fill { height: 100%; background: linear-gradient(90deg, #87a878, #4a6b42); border-radius: 100px; }
+    .tier-next { font-size: 0.55rem; color: var(--muted); }
+    .tier-stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 10px; }
+    .tier-stat { background: white; border: 1px solid var(--app-border); border-radius: 10px; padding: 8px; text-align: center; }
+    .tier-stat-num { font-size: 0.9rem; font-weight: 700; color: #3a2e24; font-family: 'Playfair Display', serif; }
+    .tier-stat-label { font-size: 0.5rem; color: var(--muted); }
+
+    /* SUPPORT CENTER UI */
+    .support-screen { background: var(--app-bg); padding: 0; }
+    .support-tabs { display: flex; border-bottom: 1px solid var(--app-border); background: white; }
+    .support-tab { flex: 1; padding: 10px; text-align: center; font-size: 0.6rem; font-weight: 600; color: var(--muted); border-bottom: 2px solid transparent; cursor: pointer; }
+    .support-tab.active { color: var(--sage); border-bottom-color: var(--sage); }
+    .support-article { margin: 10px 12px; background: white; border: 1px solid var(--app-border); border-radius: 12px; padding: 10px 12px; }
+    .article-cat { font-size: 0.5rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sage-light); margin-bottom: 4px; }
+    .article-title { font-size: 0.65rem; font-weight: 700; color: #3a2e24; margin-bottom: 3px; font-family: 'Playfair Display', serif; }
+    .article-sub { font-size: 0.55rem; color: var(--muted); line-height: 1.5; }
+    .tone-scanner-mini { margin: 10px 12px; background: #f0f7ee; border: 1px solid #b8d8a8; border-radius: 12px; padding: 10px 12px; }
+    .scanner-label { font-size: 0.52rem; font-weight: 700; color: #4a6b42; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+    .scanner-input { background: white; border: 1px solid #b8d8a8; border-radius: 8px; padding: 7px 10px; font-size: 0.58rem; color: #4a3f35; margin-bottom: 6px; }
+    .scanner-result { display: flex; align-items: center; gap: 6px; }
+    .scanner-score { width: 28px; height: 28px; border-radius: 50%; background: #4a6b42; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; color: white; flex-shrink: 0; }
+    .scanner-msg { font-size: 0.58rem; color: #3a5a32; line-height: 1.5; }
+
+    /* ONBOARDING UI */
+    .onboard-screen { background: var(--app-bg); padding: 20px 16px; min-height: 500px; display: flex; flex-direction: column; align-items: center; }
+    .onboard-dots { display: flex; gap: 4px; margin-bottom: 20px; }
+    .onboard-dot { height: 4px; border-radius: 100px; background: #ede8df; }
+    .onboard-dot.done { background: var(--app-accent); }
+    .onboard-dot.active { background: var(--app-accent); width: 16px; }
+    .onboard-dot { width: 6px; }
+    .onboard-title { font-family: 'Playfair Display', serif; font-size: 1rem; color: #3a2e24; font-weight: 700; text-align: center; margin-bottom: 6px; }
+    .onboard-sub { font-size: 0.62rem; color: var(--muted); text-align: center; margin-bottom: 20px; line-height: 1.6; }
+    .path-card { width: 100%; background: white; border: 2px solid var(--app-border); border-radius: 14px; padding: 12px 14px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: all 0.15s; }
+    .path-card.selected { border-color: var(--app-accent); background: #fff8f2; }
+    .path-icon { width: 36px; height: 36px; border-radius: 10px; background: #f5f0eb; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0; }
+    .path-label { font-size: 0.68rem; font-weight: 700; color: #3a2e24; margin-bottom: 2px; }
+    .path-desc { font-size: 0.55rem; color: var(--muted); line-height: 1.4; }
+
+    /* BROWSE UI */
+    .browse-screen { background: var(--app-bg); }
+    .browse-header { padding: 10px 12px; background: white; border-bottom: 1px solid var(--app-border); }
+    .browse-title { font-size: 0.72rem; font-weight: 700; color: #3a2e24; margin-bottom: 6px; font-family: 'Playfair Display', serif; }
+    .trending-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .trending-pill { padding: 3px 10px; background: #f5f0eb; border-radius: 100px; font-size: 0.52rem; color: var(--warm-dim); border: 1px solid var(--app-border); }
+    .trending-pill.hot { background: #fff8f2; border-color: #f0d0a0; color: var(--app-accent); }
+    .browse-section { padding: 10px 12px; }
+    .browse-section-title { font-size: 0.6rem; font-weight: 700; color: #3a2e24; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .resolved-card { background: white; border: 1px solid #b8d8a8; border-left: 3px solid #87a878; border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; }
+    .resolved-tag { font-size: 0.5rem; color: #4a6b42; font-weight: 700; margin-bottom: 3px; }
+    .resolved-text { font-size: 0.58rem; color: #4a3f35; line-height: 1.5; }
+    .resolved-update { font-size: 0.52rem; color: var(--muted); margin-top: 3px; font-style: italic; }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; margin-top: 60px; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--warm-dim); text-decoration: none; }
+    .footer-logo span { color: var(--sage-light); }
+    .footer-links { display: flex; gap: 24px; list-style: none; }
+    .footer-links a { font-size: 0.78rem; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      nav { padding: 16px 20px; }
+      .page-hero { padding: 100px 24px 40px; }
+      .feature-nav { padding: 0 20px; }
+      .feature-section { padding: 40px 24px; }
+      .feature-layout { grid-template-columns: 1fr; gap: 40px; }
+      .feature-layout.reverse { direction: ltr; }
+      footer { flex-direction: column; gap: 16px; padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Parallel<span>.</span></a>
+  <div class="nav-right">
+    <a href="index.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back
+    </a>
+    <a href="pricing.html" class="nav-cta">Join waitlist</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <p class="page-label">Welcome in</p>
+  <h1 class="page-headline">Built by people<br>who care about <em>people.</em></h1>
+  <p class="page-sub">We didn't build Parallel for a market. We built it because we needed it. Take a look around — every feature here exists because someone felt something that needed a better answer.</p>
+  <div style="margin-top:32px; padding:20px 28px; background:#fffdf9; border:1px solid #e8ddd0; border-radius:16px; display:inline-block; max-width:480px;">
+    <p style="font-family:'Playfair Display',serif; font-style:italic; font-size:1rem; color:#3d6b59; line-height:1.7; margin-bottom:8px;">"The most powerful thing you can say to someone in pain is: me too."</p>
+    <p style="font-size:0.75rem; color:#a89880;">That's the whole product. Everything below is how we make that moment possible.</p>
+  </div>
+</div>
+
+<!-- FEATURE NAV -->
+<div class="feature-nav">
+  <button class="fnav-btn active" onclick="showFeature('onboarding')">Onboarding</button>
+  <button class="fnav-btn" onclick="showFeature('feed')">Feed</button>
+  <button class="fnav-btn" onclick="showFeature('matching')">Parallel Matching</button>
+  <button class="fnav-btn" onclick="showFeature('venting')">Venting</button>
+  <button class="fnav-btn" onclick="showFeature('sage')">Sage AI</button>
+  <button class="fnav-btn" onclick="showFeature('dm')">Direct Messages</button>
+  <button class="fnav-btn" onclick="showFeature('support')">Support Center</button>
+  <button class="fnav-btn" onclick="showFeature('tiers')">Tiers</button>
+  <button class="fnav-btn" onclick="showFeature('browse')">Browse Mode</button>
+</div>
+
+<!-- ── ONBOARDING ── -->
+<div class="feature-section active" id="feat-onboarding">
+  <div class="feature-layout">
+    <div class="feature-text">
+      <p class="label">Getting started</p>
+      <h2>Three paths in.<br><em>No wrong answer.</em></h2>
+      <p>Onboarding on Parallel asks one question before anything else: what brings you here today? There's no pressure to decide. You can switch modes anytime with a single tap.</p>
+      <p>Browse path takes 60 seconds — just your age range and you're in. Seeking and Helping paths add your experiences and identifiers so we can match you properly.</p>
+      <ul class="feature-bullets">
+        <li>Age range is the only permanent field — everything else can change</li>
+        <li>Gender identity and identifiers are optional — always</li>
+        <li>Browse users can upgrade to Seeking or Helping at any time</li>
+        <li>The action you take tells us which path you need</li>
+      </ul>
+    </div>
+    <div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="onboard-screen">
+            <div class="onboard-dots">
+              <div class="onboard-dot done"></div>
+              <div class="onboard-dot active"></div>
+              <div class="onboard-dot"></div>
+              <div class="onboard-dot"></div>
+            </div>
+            <div class="onboard-title">What brings you here?</div>
+            <div class="onboard-sub">You can switch between modes anytime — this isn't permanent.</div>
+            <div class="path-card selected">
+              <div class="path-icon">&#10084;</div>
+              <div>
+                <div class="path-label">I need support</div>
+                <div class="path-desc">Connect with people who've been through what you're going through</div>
+              </div>
+            </div>
+            <div class="path-card">
+              <div class="path-icon">&#128101;</div>
+              <div>
+                <div class="path-label">I want to help</div>
+                <div class="path-desc">Share your experience with people who are where you once were</div>
+              </div>
+            </div>
+            <div class="path-card">
+              <div class="path-icon">&#128269;</div>
+              <div>
+                <div class="path-label">I want to look around</div>
+                <div class="path-desc">Not ready yet? That's okay. Browse and get a feel for the space</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── FEED ── -->
+<div class="feature-section" id="feat-feed">
+  <div class="feature-layout reverse">
+    <div class="feature-text">
+      <p class="label">The community</p>
+      <h2>Warm. Human.<br><em>Real.</em></h2>
+      <p>The feed isn't a social media timeline. It's a community board — posts from real people sharing real experiences, sorted by what's most relevant to you.</p>
+      <p>Sage responds first to every post while your human parallels are found. Nobody posts into silence.</p>
+      <ul class="feature-bullets">
+        <li>Posts are anonymous by default — no names, no faces required</li>
+        <li>Sage always responds first so you're never waiting alone</li>
+        <li>Categories filter by experience type — grief, relationships, career, and more</li>
+        <li>Mode toggle lets you switch between Seeking, Helping, and Browse instantly</li>
+      </ul>
+    </div>
+    <div>
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot" style="background:#ff5f57"></div>
+            <div class="browser-dot" style="background:#febc2e"></div>
+            <div class="browser-dot" style="background:#28c840"></div>
+          </div>
+          <div class="browser-url">parallel.app/feed</div>
+        </div>
+        <div class="browser-content">
+          <div class="app-nav">
+            <div class="app-logo">Parallel.</div>
+            <div class="app-search">Find your parallel...</div>
+            <div class="app-avatar">A</div>
+          </div>
+          <div style="padding: 6px 12px;">
+            <div class="mode-pill">
+              <div class="mode-opt active">Seeking</div>
+              <div class="mode-opt">Helping</div>
+              <div class="mode-opt">Browse</div>
+            </div>
+          </div>
+          <div class="sage-msg">
+            <div class="sage-label"><div class="sage-dot"></div>Sage · Parallel AI</div>
+            <div class="sage-text">3 people in your community are going through something similar right now. You're not alone in this.</div>
+          </div>
+          <div class="post-card">
+            <div class="post-tag">Lost my job</div>
+            <div class="post-body">I've been a PM for 11 years. Got a calendar invite that just said 'chat' and by 9:15 I was out. I keep waking up at 6:30 like I still have somewhere to be...</div>
+            <div class="post-meta">
+              <span class="post-parallels">&#128101; 847 people have been here</span>
+              <span class="post-btn">Find my parallel</span>
+            </div>
+          </div>
+          <div class="post-card">
+            <div class="post-tag">Grieving my mother</div>
+            <div class="post-body">She passed three weeks ago. Everyone keeps saying she's in a better place and I just want to scream...</div>
+            <div class="post-meta">
+              <span class="post-parallels">&#128101; 1,203 people have been here</span>
+              <span class="post-btn">Find my parallel</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MATCHING ── -->
+<div class="feature-section" id="feat-matching">
+  <div class="feature-layout">
+    <div class="feature-text">
+      <p class="label">The core promise</p>
+      <h2>You don't need<br>the right words.<br><em>Just the honest ones.</em></h2>
+      <p>Type how you actually feel — not clinical labels. "I feel empty and nothing helps" finds the same people as "major depressive disorder." Your language is valid.</p>
+      <p>The Parallel Filter shows you exactly who has been through your experience. The thread graphic represents two paths converging — yours and theirs.</p>
+      <ul class="feature-bullets">
+        <li>Fuzzy search — typos and variations all work</li>
+        <li>First-person language — "I feel depressed" works just like "depressed"</li>
+        <li>Clinical tags are backend only — users only ever see human language</li>
+        <li>Multiple experiences can be filtered simultaneously</li>
+      </ul>
+    </div>
+    <div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="match-screen" style="padding:16px; min-height:560px;">
+            <div class="match-header">
+              <div class="match-title">Find your parallel</div>
+              <div class="match-sub">People who've been exactly where you are</div>
+            </div>
+            <div style="background:#f5f0eb; border-radius:10px; padding:8px 12px; font-size:0.62rem; color:var(--muted); margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+              <span style="color:#c4956a;">&#128269;</span> I feel lost after losing my job...
+            </div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:16px;">
+              <span style="background:#fff8f2; border:1px solid #f0d0a0; border-radius:100px; padding:3px 10px; font-size:0.52rem; color:#c4956a; font-weight:600;">Job loss ×</span>
+              <span style="background:#fff8f2; border:1px solid #f0d0a0; border-radius:100px; padding:3px 10px; font-size:0.52rem; color:#c4956a; font-weight:600;">Identity ×</span>
+            </div>
+            <div style="position:relative; height:50px; margin-bottom:16px;">
+              <svg width="100%" height="50" viewBox="0 0 240 50">
+                <path d="M0,10 C40,10 60,40 120,25 C180,10 200,40 240,40" fill="none" stroke="#87a878" stroke-width="1.5" opacity="0.6"/>
+                <path d="M0,40 C40,40 60,10 120,25 C180,40 200,10 240,10" fill="none" stroke="#c4956a" stroke-width="1.5" opacity="0.6"/>
+                <circle cx="120" cy="25" r="4" fill="#c4956a"/>
+              </svg>
+              <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:0.48rem; color:#c4956a; white-space:nowrap; margin-top:18px;">3 parallels found</div>
+            </div>
+            <div class="match-card">
+              <div class="match-icon">M</div>
+              <div class="match-info">
+                <div class="match-name">anonymous_cedar</div>
+                <div class="match-exp">Job loss · Identity · 14 months ago</div>
+              </div>
+              <span class="match-connect">Connect</span>
+            </div>
+            <div class="match-card">
+              <div class="match-icon">T</div>
+              <div class="match-info">
+                <div class="match-name">anonymous_willow</div>
+                <div class="match-exp">Career change · Job loss · 8 months ago</div>
+              </div>
+              <span class="match-connect">Connect</span>
+            </div>
+            <div class="match-card">
+              <div class="match-icon">R</div>
+              <div class="match-info">
+                <div class="match-name">anonymous_oak</div>
+                <div class="match-exp">Burnout · Job loss · 2 years ago</div>
+              </div>
+              <span class="match-connect">Connect</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── VENTING ── -->
+<div class="feature-section" id="feat-venting">
+  <div class="feature-layout reverse">
+    <div class="feature-text">
+      <p class="label">Sacred space</p>
+      <h2>Say the thing.<br><em>Watch it disappear.</em></h2>
+      <p>Venting is the one feature on Parallel with no Sage scanner, no feedback, no moderation. It's just you and the release. When the timer runs out — it's gone.</p>
+      <p>Three modes, three moods. Free users get Float. Paid users choose how their words leave.</p>
+      <ul class="feature-bullets">
+        <li><strong>Float</strong> — words drift upward and dissolve as you type them</li>
+        <li><strong>Heartbeat</strong> — screen pulses faster as time runs out</li>
+        <li><strong>Burn</strong> — write everything, watch the timer, it all dissolves at once</li>
+        <li>Crisis detection still runs silently — you're never truly alone</li>
+        <li>Nothing is stored. Nothing is shared. Between you and you.</li>
+      </ul>
+    </div>
+    <div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="vent-screen">
+            <div class="vent-privacy">&#9675; Between you and you</div>
+            <div class="vent-mode-btns">
+              <button class="vent-mode-btn">&#9829; Heartbeat</button>
+              <button class="vent-mode-btn active">&#8593; Float</button>
+              <button class="vent-mode-btn">&#9675; Burn</button>
+            </div>
+            <div id="vent-display" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; width:80%;"></div>
+            <div class="vent-timer">
+              <svg width="36" height="36" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+                <circle cx="18" cy="18" r="15" fill="none" stroke="#c4956a" stroke-width="2" stroke-linecap="round" stroke-dasharray="94.2" stroke-dashoffset="37.7" transform="rotate(-90 18 18)"/>
+                <text x="18" y="23" text-anchor="middle" fill="#c4956a" font-size="9" font-family="DM Sans,sans-serif" font-weight="700">22</text>
+              </svg>
+            </div>
+            <div class="vent-input-area">
+              <div class="vent-hint">Press space to release each word &#8593;</div>
+              <span id="vent-typing" style="font-family:'Playfair Display',serif; font-style:italic; font-size:0.75rem; color:rgba(200,180,160,0.7);"></span><div class="vent-cursor"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SAGE ── -->
+<div class="feature-section" id="feat-sage">
+  <div class="feature-layout">
+    <div class="feature-text">
+      <p class="label">AI done right</p>
+      <h2>Holds space.<br><em>Never center stage.</em></h2>
+      <p>Sage is Parallel's built-in AI — always labeled, always transparent. It's there in the gap between posting and your community arriving. It checks in when posts carry weight. It never pretends to be human.</p>
+      <p>The SmartTextBox scans your response tone silently as you type. After a 2.5 second pause, Sage reads what you wrote. If it flags something — a gentle nudge appears. You always choose whether to post.</p>
+      <ul class="feature-bullets">
+        <li>Style is never flagged — slang, AAVE, casual language all fine</li>
+        <li>Only flags what would make someone feel dismissed or unseen</li>
+        <li>Crisis detection routes to real resources — never a chatbot loop</li>
+        <li>No tone scanning inside Venting — ever</li>
+        <li>Always labeled "Parallel AI" — no ambiguity</li>
+      </ul>
+    </div>
+    <div>
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot" style="background:#ff5f57"></div>
+            <div class="browser-dot" style="background:#febc2e"></div>
+            <div class="browser-dot" style="background:#28c840"></div>
+          </div>
+          <div class="browser-url">parallel.app/post/847</div>
+        </div>
+        <div class="browser-content" style="padding:16px;">
+          <div class="sage-msg" style="margin:0 0 12px;">
+            <div class="sage-label"><div class="sage-dot"></div>Sage · Parallel AI · Responded immediately</div>
+            <div class="sage-text">What you're describing — waking up at 6:30 with nowhere to go — is one of the most disorienting parts of sudden job loss. Your sense of self didn't disappear with the job. It got buried under years of showing up. The people who've been through this and come back describe coming back as someone slightly different — more grounded, less defined by a title.</div>
+          </div>
+          <div style="background:#f5f0eb; border-radius:10px; padding:10px 12px; margin-bottom:8px;">
+            <div style="font-size:0.58rem; color:var(--muted); margin-bottom:6px;">Your response</div>
+            <div style="font-size:0.62rem; color:#4a3f35; line-height:1.6; margin-bottom:8px;">I went through this two years ago. It took me six months but I came back stronger. You just need to stay positive and keep applying...</div>
+            <div style="background:#fff8f2; border:1px solid #f0d0a0; border-left:3px solid #c4956a; border-radius:0 8px 8px 0; padding:8px 10px; display:flex; align-items:flex-start; gap:8px;">
+              <div style="width:18px; height:18px; border-radius:6px; background:linear-gradient(135deg,#87a878,#4a6b42); flex-shrink:0; display:flex; align-items:center; justify-content:center;">
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div>
+                <div style="font-size:0.52rem; color:#8b7355; font-weight:700; margin-bottom:2px;">Sage: Before you post</div>
+                <div style="font-size:0.55rem; color:#8b7355; line-height:1.5;">"Just need to stay positive" might feel dismissive to someone in acute pain. Want to see a suggestion?</div>
+                <div style="display:flex; gap:6px; margin-top:6px;">
+                  <span style="font-size:0.5rem; color:#c4956a; cursor:pointer; text-decoration:underline;">See suggestion</span>
+                  <span style="font-size:0.5rem; color:var(--muted); cursor:pointer;">Post anyway</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DIRECT MESSAGES ── -->
+<div class="feature-section" id="feat-dm">
+  <div class="feature-layout reverse">
+    <div class="feature-text">
+      <div class="coming-soon">&#9679; Coming soon</div>
+      <p class="label">Private connections</p>
+      <h2>Your parallel.<br><em>Just the two of you.</em></h2>
+      <p>When you find someone who has been through exactly what you're going through, sometimes the conversation needs to move somewhere private. Direct messaging on Parallel is built for that moment.</p>
+      <p>Every DM thread shows your shared parallel — the experience that connected you — so you never lose sight of why you're here.</p>
+      <ul class="feature-bullets">
+        <li>Only available between matched parallels — not cold outreach</li>
+        <li>Shared parallel badge shows your connection at the top of every thread</li>
+        <li>Sage tone scanner active in DMs — same gentle nudge before sending</li>
+        <li>You can end or pause a DM thread at any time with no friction</li>
+        <li>Available at Rooted tier and above</li>
+      </ul>
+    </div>
+    <div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="dm-screen">
+            <div class="dm-header">
+              <div style="cursor:pointer; color:var(--muted);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/></svg>
+              </div>
+              <div class="dm-avatar">C</div>
+              <div>
+                <div class="dm-name">anonymous_cedar</div>
+                <div class="dm-parallel-tag">Your parallel · Job loss &amp; identity</div>
+              </div>
+            </div>
+            <div class="dm-parallel-badge">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4a6b42" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              Connected through: Job loss · Career identity
+            </div>
+            <div class="dm-messages">
+              <div class="dm-timestamp">Today · 2:14 PM</div>
+              <div class="dm-msg them">Hey — I saw your post. I went through almost exactly the same thing 14 months ago. The 6:30 wake up thing hit me hard.</div>
+              <div class="dm-msg me">Really? How long before it started feeling normal again?</div>
+              <div class="dm-msg them">Honest answer? About four months before I stopped reaching for my work laptop first thing. But something shifted around month two when I stopped trying to replicate what I had.</div>
+              <div class="dm-msg me">That's both terrifying and somehow helpful. What changed in month two?</div>
+              <div class="dm-msg them">I'll tell you but it's going to sound annoyingly simple. I started asking what I actually liked about the work — not the role, the actual work. Turns out it wasn't the PM stuff.</div>
+            </div>
+            <div class="dm-input-row">
+              <div class="dm-input">Reply to anonymous_cedar...</div>
+              <div class="dm-send">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SUPPORT CENTER ── -->
+<div class="feature-section" id="feat-support">
+  <div class="feature-layout">
+    <div class="feature-text">
+      <p class="label">Communication skills</p>
+      <h2>Learn to show up<br><em>for anyone.</em></h2>
+      <p>The Support Center teaches you how to actually be helpful — not just on Parallel, but in your life. Articles, quick reference guides, and a live Sage tone scanner that grades your responses before you post.</p>
+      <p>These skills transfer. The way you learn to listen here will change how you show up for your family, your friends, your relationships.</p>
+      <ul class="feature-bullets">
+        <li>Articles on grief, anger, crisis, and giving feedback without fixing</li>
+        <li>Quick reference cards — phrases that work, phrases to avoid</li>
+        <li>Live Sage tone check — paste your response, get a score out of 100</li>
+        <li>Sage suggests a rewrite if your score is below 70</li>
+        <li>Real language understanding — not just pattern matching</li>
+      </ul>
+    </div>
+    <div>
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot" style="background:#ff5f57"></div>
+            <div class="browser-dot" style="background:#febc2e"></div>
+            <div class="browser-dot" style="background:#28c840"></div>
+          </div>
+          <div class="browser-url">parallel.app/support</div>
+        </div>
+        <div class="browser-content">
+          <div class="support-screen">
+            <div class="support-tabs">
+              <div class="support-tab active">Articles</div>
+              <div class="support-tab">Quick Reference</div>
+            </div>
+            <div class="support-article">
+              <div class="article-cat">Grief</div>
+              <div class="article-title">How to respond to someone who is grieving</div>
+              <div class="article-sub">The most important thing you can offer is presence, not answers.</div>
+            </div>
+            <div class="support-article">
+              <div class="article-cat">Anger</div>
+              <div class="article-title">How to respond to someone who is angry</div>
+              <div class="article-sub">Anger is almost always grief or fear in disguise. Meet it there.</div>
+            </div>
+            <div class="tone-scanner-mini">
+              <div class="scanner-label">
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#4a6b42" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Sage Tone Check
+              </div>
+              <div class="scanner-input">we all experience loss, you will get over it</div>
+              <div class="scanner-result">
+                <div class="scanner-score" style="background:#f87171;">24</div>
+                <div class="scanner-msg">This dismisses their pain. "You'll get over it" minimizes a real experience. Try sharing what helped you instead of telling them what to do.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── TIERS ── -->
+<div class="feature-section" id="feat-tiers">
+  <div class="feature-layout reverse">
+    <div class="feature-text">
+      <p class="label">Trust earned</p>
+      <h2>Five levels.<br><em>One arc.</em></h2>
+      <p>You don't earn your tier by being here longer. You earn it by showing up — consistently, carefully, with genuine care for the people around you.</p>
+      <p>Each tier unlocks more ways to connect and contribute. Guides — the highest tier — can facilitate paid cohorts and earn 70% of the revenue directly.</p>
+      <ul class="feature-bullets">
+        <li>Seedling → Rooted → Steady → Trusted → Pillar (Guide)</li>
+        <li>Earned through responses given, helpful ratings, and time</li>
+        <li>Each tier unlocks faster post review and deeper access</li>
+        <li>Guides earn real income through paid cohort facilitation</li>
+        <li>Full breakdown on the <a href="trust.html" style="color:var(--sage-light);">Trust page</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="tier-screen">
+            <div style="font-size:0.72rem; font-weight:700; color:#3a2e24; font-family:'Playfair Display',serif; margin-bottom:12px;">Your journey</div>
+            <div class="tier-current">
+              <div class="tier-emoji-large">&#127807;&#127807;</div>
+              <div>
+                <div class="tier-current-name">Rooted</div>
+                <div class="tier-current-sub">Level 2 · Finding your footing</div>
+              </div>
+            </div>
+            <div style="font-size:0.55rem; color:var(--muted); margin-bottom:4px;">Progress to Steady</div>
+            <div class="tier-progress-bar"><div class="tier-progress-fill" style="width:62%"></div></div>
+            <div class="tier-next" style="margin-bottom:12px;">6 more helpful responses needed</div>
+            <div class="tier-stat-row">
+              <div class="tier-stat"><div class="tier-stat-num">14</div><div class="tier-stat-label">Responses</div></div>
+              <div class="tier-stat"><div class="tier-stat-num">4.7</div><div class="tier-stat-label">Avg rating</div></div>
+              <div class="tier-stat"><div class="tier-stat-num">3</div><div class="tier-stat-label">Parallels</div></div>
+            </div>
+            <div style="font-size:0.6rem; font-weight:700; color:#3a2e24; margin-bottom:8px;">All tiers</div>
+            <div style="display:flex; flex-direction:column; gap:4px;">
+              <div style="display:flex; align-items:center; gap:8px; padding:6px 8px; background:white; border-radius:8px; border:1px solid var(--app-border); opacity:0.5;"><span>&#127807;</span><span style="font-size:0.6rem; color:#3a2e24;">Seedling</span><span style="margin-left:auto; font-size:0.5rem; color:#87a878;">&#10003; Complete</span></div>
+              <div style="display:flex; align-items:center; gap:8px; padding:6px 8px; background:#fff8f2; border-radius:8px; border:1px solid #f0d0a0;"><span>&#127807;&#127807;</span><span style="font-size:0.6rem; color:#3a2e24; font-weight:600;">Rooted</span><span style="margin-left:auto; font-size:0.5rem; color:#c4956a;">Current</span></div>
+              <div style="display:flex; align-items:center; gap:8px; padding:6px 8px; background:white; border-radius:8px; border:1px solid var(--app-border);"><span>&#127795;</span><span style="font-size:0.6rem; color:#3a2e24;">Steady</span><span style="margin-left:auto; font-size:0.5rem; color:var(--muted);">6 more</span></div>
+              <div style="display:flex; align-items:center; gap:8px; padding:6px 8px; background:white; border-radius:8px; border:1px solid var(--app-border); opacity:0.6;"><span>&#11088;</span><span style="font-size:0.6rem; color:#3a2e24;">Trusted</span></div>
+              <div style="display:flex; align-items:center; gap:8px; padding:6px 8px; background:white; border-radius:8px; border:1px solid var(--app-border); opacity:0.4;"><span>&#128293;</span><span style="font-size:0.6rem; color:#3a2e24;">Pillar · Guide</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── BROWSE ── -->
+<div class="feature-section" id="feat-browse">
+  <div class="feature-layout">
+    <div class="feature-text">
+      <div class="coming-soon">&#9679; Coming soon</div>
+      <p class="label">Not ready yet?</p>
+      <h2>Look around.<br><em>No pressure.</em></h2>
+      <p>Browse mode is for people who aren't sure yet. You can read everything, see what's happening in the community, and get a feel for the space before you decide to participate.</p>
+      <p>When you're ready to post or respond — one tap upgrades you to Seeking or Helping. No re-registration. Your age range carries over.</p>
+      <ul class="feature-bullets">
+        <li>Trending topics — what the community is carrying most right now</li>
+        <li>Recently resolved — proof that people make it through</li>
+        <li>Community pulse — how many people are here right now</li>
+        <li>Your activity tab — easy return to posts you've engaged with</li>
+        <li>Post alerts — get notified when someone responds to a post you care about</li>
+      </ul>
+    </div>
+    <div>
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot" style="background:#ff5f57"></div>
+            <div class="browser-dot" style="background:#febc2e"></div>
+            <div class="browser-dot" style="background:#28c840"></div>
+          </div>
+          <div class="browser-url">parallel.app/browse</div>
+        </div>
+        <div class="browser-content">
+          <div class="browse-screen">
+            <div class="browse-header">
+              <div class="browse-title">What's happening</div>
+              <div class="trending-pills">
+                <span class="trending-pill hot">&#128293; Job loss</span>
+                <span class="trending-pill hot">&#128293; Grief</span>
+                <span class="trending-pill">Anxiety</span>
+                <span class="trending-pill">Relationships</span>
+                <span class="trending-pill">Recovery</span>
+              </div>
+            </div>
+            <div class="browse-section">
+              <div class="browse-section-title">&#10003; Recently resolved</div>
+              <div class="resolved-card">
+                <div class="resolved-tag">Job loss · 4 months ago</div>
+                <div class="resolved-text">"I kept waking up at 6:30 for weeks. Didn't know who I was without the title."</div>
+                <div class="resolved-update">Update: Found a new role. More importantly — found myself.</div>
+              </div>
+              <div class="resolved-card">
+                <div class="resolved-tag">Grief · 7 months ago</div>
+                <div class="resolved-text">"Everyone kept telling me she was in a better place. I just wanted to scream."</div>
+                <div class="resolved-update">Update: Still miss her every day. But I can talk about her now without falling apart.</div>
+              </div>
+            </div>
+            <div class="browse-section" style="padding-top:0;">
+              <div class="browse-section-title">&#128101; Community right now</div>
+              <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+                <div style="background:white; border:1px solid var(--app-border); border-radius:10px; padding:8px; text-align:center;"><div style="font-size:1rem; font-weight:700; color:#3a2e24; font-family:'Playfair Display',serif;">247</div><div style="font-size:0.5rem; color:var(--muted);">Seeking</div></div>
+                <div style="background:white; border:1px solid var(--app-border); border-radius:10px; padding:8px; text-align:center;"><div style="font-size:1rem; font-weight:700; color:#3a2e24; font-family:'Playfair Display',serif;">183</div><div style="font-size:0.5rem; color:var(--muted);">Helping</div></div>
+                <div style="background:white; border:1px solid var(--app-border); border-radius:10px; padding:8px; text-align:center;"><div style="font-size:1rem; font-weight:700; color:#3a2e24; font-family:'Playfair Display',serif;">12</div><div style="font-size:0.5rem; color:var(--muted);">Guides online</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div style="max-width:700px; margin:0 auto 60px; padding:0 48px; text-align:center;">
+  <div style="background:linear-gradient(135deg,#f5efe6,#fffdf9); border:1px solid var(--border); border-radius:24px; padding:48px 40px;">
+    <p style="font-family:'Playfair Display',serif; font-size:clamp(1.2rem,2.5vw,1.6rem); color:var(--text); line-height:1.5; font-style:italic; margin-bottom:16px;">"Someone out there has been through exactly what you're going through."</p>
+    <p style="font-size:0.9rem; color:var(--warm-dim); line-height:1.7; max-width:460px; margin:0 auto 28px;">Join the waitlist. Be one of the first 500 founding members at $4.99/mo locked for life.</p>
+    <a href="pricing.html" style="display:inline-block; background:var(--sage); color:#fff; padding:14px 36px; border-radius:100px; text-decoration:none; font-size:0.95rem; font-weight:500; transition:background 0.2s;">Join the waitlist</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="index.html" class="footer-logo">Parallel<span>.</span></a>
+  <p style="font-size:0.78rem; color:var(--muted);">Not therapy. Community. &copy;2025 Parallel</p>
+  <ul class="footer-links">
+    <li><a href="trust.html">Trust</a></li>
+    <li><a href="parallel-blog.html">Blog</a></li>
+    <li><a href="pricing.html">Waitlist</a></li>
+  </ul>
+</footer>
+
+<script>
+  // Venting demo animation
+  const ventPhrases = [
+    { words: ["I'm", "so", "tired", "of", "pretending", "I'm", "fine"], full: "I'm so tired of pretending I'm fine" },
+    { words: ["nobody", "actually", "knows", "how", "hard", "this", "is"], full: "nobody actually knows how hard this is" },
+    { words: ["I", "just", "needed", "to", "say", "that", "out", "loud"], full: "I just needed to say that out loud" },
+    { words: ["it's", "okay", "that", "I'm", "not", "okay", "right", "now"], full: "it's okay that I'm not okay right now" },
+  ];
+
+  let ventPhrase = 0;
+  let ventWord = 0;
+  let ventTyping = false;
+
+  function runVentDemo() {
+    const display = document.getElementById('vent-display');
+    const typingEl = document.getElementById('vent-typing');
+    if (!display || !typingEl) return;
+
+    const phrase = ventPhrases[ventPhrase];
+
+    // Type words one by one into the input
+    function typeNextWord() {
+      if (ventWord >= phrase.words.length) {
+        // All words typed — show full phrase floating up then fade
+        typingEl.textContent = '';
+        display.innerHTML = '<div style="font-family:Playfair Display,serif; font-style:italic; font-size:0.9rem; color:rgba(200,180,160,0.85); animation:floatFade 2.5s ease forwards; text-align:center; line-height:1.6;">' + phrase.full + '</div>';
+        setTimeout(() => {
+          display.innerHTML = '';
+          ventWord = 0;
+          ventPhrase = (ventPhrase + 1) % ventPhrases.length;
+          setTimeout(typeNextWord, 800);
+        }, 2800);
+        return;
+      }
+      // Show word in typing area briefly then release
+      typingEl.textContent = phrase.words[ventWord];
+      setTimeout(() => {
+        typingEl.textContent = '';
+        ventWord++;
+        setTimeout(typeNextWord, 200);
+      }, 400);
+    }
+
+    typeNextWord();
+  }
+
+  // Add float fade keyframe
+  const ventStyle = document.createElement('style');
+  ventStyle.textContent = '@keyframes floatFade { 0% { opacity:0; transform:translateY(20px); } 20% { opacity:1; transform:translateY(0); } 70% { opacity:0.9; transform:translateY(-10px); } 100% { opacity:0; transform:translateY(-50px); } }';
+  document.head.appendChild(ventStyle);
+
+  // Start when venting tab is visible
+  const origShowFeature = window.showFeatureOrig;
+  setTimeout(runVentDemo, 1000);
+
+    function showFeature(id) {
+    document.querySelectorAll('.feature-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.fnav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('feat-' + id).classList.add('active');
+    event.target.classList.add('active');
+    if (id === 'venting') { ventPhrase = 0; ventWord = 0; runVentDemo(); }
+    window.scrollTo({ top: document.querySelector('.feature-nav').offsetTop - 57, behavior: 'smooth' });
+  }
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
