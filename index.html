@@ -43,19 +43,25 @@
       justify-content: space-between;
       align-items: center;
       padding: 22px 48px;
-      background: linear-gradient(to bottom, rgba(13,13,13,0.95), transparent);
+      background: linear-gradient(to bottom, rgba(26,26,26,0.97), transparent);
     }
 
     .nav-logo {
       font-family: 'Playfair Display', serif;
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       letter-spacing: 0.04em;
-      color: var(--white);
+      color: #f0ece4;
       text-decoration: none;
+      font-weight: 700;
     }
 
     .nav-logo span {
-      color: var(--sage-light);
+      color: #52b788;
+      font-style: italic;
+    }
+
+    .nav-logo:hover {
+      color: #ffffff;
     }
 
     .nav-links {
@@ -90,11 +96,11 @@
 
     /* ---- HERO ---- */
     .hero {
-      min-height: 100vh;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      padding: 140px 48px 80px;
+      padding: 120px 48px 60px;
       position: relative;
       overflow: hidden;
     }
@@ -588,112 +594,6 @@
       border: 1px solid var(--border);
       border-radius: 100px;
       color: var(--warm-dim);
-    }
-
-    /* ---- WAITLIST ---- */
-    .waitlist-section {
-      padding: 120px 48px;
-      background: linear-gradient(160deg, var(--off-black) 0%, #0f1a16 100%);
-      border-top: 1px solid var(--border);
-      text-align: center;
-    }
-
-    .waitlist-inner {
-      max-width: 560px;
-      margin: 0 auto;
-    }
-
-    .waitlist-inner .section-headline {
-      max-width: none;
-      margin: 0 auto;
-    }
-
-    .waitlist-sub {
-      margin-top: 16px;
-      color: var(--warm-dim);
-      font-size: 1rem;
-    }
-
-    .waitlist-form {
-      margin-top: 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .form-row {
-      display: flex;
-      gap: 12px;
-    }
-
-    .form-input {
-      flex: 1;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 14px 22px;
-      color: var(--white);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .form-input::placeholder { color: var(--muted); }
-    .form-input:focus { border-color: var(--sage); }
-
-    .form-select {
-      flex: 1;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 14px 22px;
-      color: var(--warm-dim);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.2s;
-      appearance: none;
-      cursor: pointer;
-    }
-
-    .form-select:focus { border-color: var(--sage); color: var(--white); }
-    .form-select option { background: var(--card); }
-
-    .waitlist-submit {
-      background: var(--sage);
-      color: var(--white);
-      border: none;
-      padding: 16px;
-      border-radius: 100px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.15s;
-      width: 100%;
-    }
-
-    .waitlist-submit:hover {
-      background: var(--sage-light);
-      transform: translateY(-1px);
-    }
-
-    .waitlist-note {
-      margin-top: 16px;
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .success-msg {
-      display: none;
-      margin-top: 24px;
-      padding: 20px 28px;
-      background: var(--sage-glow);
-      border: 1px solid var(--sage);
-      border-radius: 16px;
-      color: var(--sage-light);
-      font-size: 0.95rem;
     }
 
     /* ---- TESTIMONIALS ---- */
@@ -1198,6 +1098,24 @@
       transform: translateY(0);
     }
 
+
+    .mobile-cta {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      .mobile-cta {
+        display: inline-block;
+        background: var(--sage);
+        color: #fff !important;
+        padding: 10px 20px !important;
+        border-radius: 100px;
+        font-size: 0.875rem !important;
+        font-weight: 500;
+        text-decoration: none;
+        letter-spacing: 0.02em;
+      }
+    }
+
     /* ---- RESPONSIVE ---- */
     @media (max-width: 900px) {
       nav { padding: 20px 24px; }
@@ -1214,6 +1132,222 @@
       footer { flex-direction: column; gap: 20px; text-align: center; }
       .hero-stat-row { gap: 32px; flex-wrap: wrap; }
     }
+
+    /* ---- PRELAUNCH FORM ---- */
+    .prelaunch-form-wrap {
+      margin-top: 40px;
+      max-width: 520px;
+    }
+
+    .prelaunch-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .prelaunch-field-group {
+      position: relative;
+    }
+
+    .prelaunch-input {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .prelaunch-input:focus {
+      border-color: var(--sage);
+      box-shadow: 0 0 0 3px var(--sage-glow);
+    }
+
+    .prelaunch-input::placeholder { color: var(--muted); }
+
+    .prelaunch-textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 18px;
+      color: var(--white);
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-style: italic;
+      font-weight: 400;
+      outline: none;
+      resize: none;
+      min-height: 110px;
+      line-height: 1.6;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .prelaunch-textarea:focus {
+      border-color: var(--sage);
+      box-shadow: 0 0 0 3px var(--sage-glow);
+    }
+
+    .prelaunch-textarea::placeholder { color: var(--muted); font-style: italic; }
+
+    .prelaunch-char-count {
+      text-align: right;
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-top: 4px;
+      opacity: 0.5;
+    }
+
+    .prelaunch-field-error {
+      display: none;
+      font-size: 0.75rem;
+      color: #c0392b;
+      margin-top: 4px;
+    }
+
+    .prelaunch-field-error.visible { display: block; }
+
+    .prelaunch-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .prelaunch-btn {
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .prelaunch-success {
+      margin-top: 32px;
+      max-width: 520px;
+      background: var(--sage-glow);
+      border: 1px solid var(--sage);
+      border-radius: 14px;
+      padding: 28px 32px;
+    }
+
+    .prelaunch-success-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(74,124,106,0.15);
+      border: 1px solid var(--sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ---- DARK HERO OVERRIDE ---- */
+    .hero {
+      background: #1a1a1a;
+      color: #e8e2d9;
+    }
+    .hero .hero-eyebrow { color: #52b788; }
+    .hero .hero-headline { color: #e8e2d9; }
+    .hero .hero-headline em { color: #c9a96e; }
+    .hero .hero-sub { color: #9a8f86; }
+    .hero > * { position: relative; z-index: 1; }
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 700px; height: 500px;
+      background: radial-gradient(ellipse, rgba(45,106,79,0.10) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero .prelaunch-input,
+    .hero .prelaunch-textarea {
+      background: #141414;
+      border-color: #2a2a2a;
+      color: #e8e2d9;
+    }
+    .hero .prelaunch-input::placeholder,
+    .hero .prelaunch-textarea::placeholder { color: #444444; }
+    .hero .prelaunch-input:focus,
+    .hero .prelaunch-textarea:focus {
+      border-color: #2d6a4f;
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.12);
+    }
+    .hero .prelaunch-note { color: #666666; }
+    .hero .prelaunch-success {
+      background: rgba(45,106,79,0.08);
+      border-color: rgba(45,106,79,0.3);
+    }
+    .hero .prelaunch-success h3 { color: #e8e2d9; }
+    .hero .btn-ghost {
+      color: #666666;
+      border-color: #2a2a2a;
+    }
+    .hero .btn-ghost:hover {
+      color: #e8e2d9;
+      border-color: #666666;
+    }
+
+    /* ---- PRELAUNCH FORM ---- */
+    .prelaunch-form-wrap { margin-top: 40px; max-width: 520px; }
+    .prelaunch-fields { display: flex; flex-direction: column; gap: 12px; margin-bottom: 14px; }
+    .prelaunch-field-group { position: relative; }
+    .prelaunch-input {
+      width: 100%; background: #141414; border: 1px solid #2e2620;
+      border-radius: 10px; padding: 14px 18px; color: #e8e2d9;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 300;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .prelaunch-input::placeholder { color: #444444; }
+    .prelaunch-input:focus { border-color: #2d6a4f; box-shadow: 0 0 0 3px rgba(45,106,79,0.12); }
+    .prelaunch-textarea {
+      width: 100%; background: #141414; border: 1px solid #2e2620;
+      border-radius: 10px; padding: 14px 18px; color: #e8e2d9;
+      font-family: 'Playfair Display', serif; font-size: 1rem; font-style: italic;
+      font-weight: 400; outline: none; resize: none; min-height: 110px;
+      line-height: 1.6; transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .prelaunch-textarea::placeholder { color: #444444; font-style: italic; }
+    .prelaunch-textarea:focus { border-color: #2d6a4f; box-shadow: 0 0 0 3px rgba(45,106,79,0.12); }
+    .prelaunch-char-count { text-align: right; font-size: 0.7rem; color: #444444; margin-top: 4px; opacity: 0.5; }
+    .prelaunch-field-error { display: none; font-size: 0.75rem; color: #c0392b; margin-top: 4px; }
+    .prelaunch-field-error.visible { display: block; }
+    .prelaunch-note {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 0.78rem; color: #666666; line-height: 1.5; margin-bottom: 16px;
+    }
+    .prelaunch-btn {
+      width: 100%; max-width: 520px; text-align: center; padding: 15px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .prelaunch-success {
+      margin-top: 32px; max-width: 520px;
+      background: rgba(45,106,79,0.08); border: 1px solid rgba(45,106,79,0.3);
+      border-radius: 14px; padding: 28px 32px;
+    }
+    .prelaunch-success-icon {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(74,124,106,0.15); border: 1px solid #3d6b59;
+      display: flex; align-items: center; justify-content: center; margin-bottom: 14px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -1221,13 +1355,15 @@
   <!-- NAV -->
   <nav>
     <a href="index.html" class="nav-logo">Parallel<span>.</span></a>
+    <a href="prelaunch.html" class="mobile-cta">Join waitlist</a>
     <ul class="nav-links">
-      <li><a href="#how">How it works</a></li>
+      <li><a href="how-it-works.html">How it works</a></li>
       <li><a href="#features">Features</a></li>
       <li><a href="#sage">Sage AI</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="parallel-blog.html">Blog</a></li>
-      <li><a href="pricing.html" class="nav-cta">Join waitlist</a></li>
+      <li><a href="trust.html">Trust</a></li>
+      <li><a href="prelaunch.html" class="nav-cta">Join waitlist</a></li>
     </ul>
   </nav>
 
@@ -1235,27 +1371,64 @@
   <section class="hero" style="max-width:none; padding-left:48px; padding-right:48px;">
     <div class="hero-bg"></div>
     <p class="hero-eyebrow">Not therapy. Not a hotline. Community.</p>
-    <h1 class="hero-headline">You don't have to explain yourself here.</h1>
-    <p class="hero-sub">Parallel connects you with people who've lived what you're living — not algorithms, not diagnoses. Just people who actually get it.</p>
-    <div class="hero-actions">
-      <a href="pricing.html" class="btn-primary">Find your Parallel</a>
-      <a href="#how" class="btn-ghost">See how it works</a>
+    <h1 class="hero-headline">What's the question you've never been able to <em>ask anyone?</em></h1>
+    <p class="hero-sub">Not because it's wrong. Because you haven't found the right room yet. Parallel is that room — built on shared lived experience, not advice.</p>
+
+    <!-- INLINE PRELAUNCH FORM -->
+    <div class="prelaunch-form-wrap" id="formWrapper">
+      <form id="joinForm" novalidate>
+        <input type="hidden" name="form-name" value="parallel-waitlist" />
+        <p style="display:none;"><input name="bot-field" /></p>
+        <div class="prelaunch-fields">
+          <div class="prelaunch-field-group">
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Your email"
+              autocomplete="email"
+              class="prelaunch-input"
+            />
+            <div class="prelaunch-field-error" id="emailError">Please enter a valid email.</div>
+          </div>
+          <div class="prelaunch-field-group">
+            <textarea
+              id="question"
+              name="question"
+              placeholder="Ask it here. No judgment."
+              maxlength="300"
+              class="prelaunch-textarea"
+            ></textarea>
+            <div class="prelaunch-char-count"><span id="charCount">0</span> / 300</div>
+            <div class="prelaunch-field-error" id="questionError">Your question can't be empty.</div>
+          </div>
+        </div>
+        <div class="prelaunch-note">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0; margin-top:2px; color:var(--sage-light);">
+            <rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          <span>This becomes your first post when Parallel launches. We'll never share your email.</span>
+        </div>
+        <button type="submit" class="btn-primary prelaunch-btn" id="submitBtn">
+          <span class="btn-text">I'm in</span>
+          <span class="btn-spinner" id="btnSpinner" style="display:none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 0.7s linear infinite;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+          </span>
+        </button>
+      </form>
     </div>
-    <div class="hero-stat-row">
-      <div class="hero-stat">
-        <span class="stat-num">Seek</span>
-        <span class="stat-label">Find people who've been there</span>
+
+    <!-- Success state -->
+    <div class="prelaunch-success" id="successState" style="display:none;">
+      <div class="prelaunch-success-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--sage-light)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
       </div>
-      <div class="hero-stat-divider">—</div>
-      <div class="hero-stat">
-        <span class="stat-num">Help</span>
-        <span class="stat-label">Give back from lived experience</span>
-      </div>
-      <div class="hero-stat-divider">—</div>
-      <div class="hero-stat">
-        <span class="stat-num">Browse</span>
-        <span class="stat-label">Not ready yet? That's okay.</span>
-      </div>
+      <h3 style="font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:400; margin-bottom:0.5rem;">You're in.</h3>
+      <p style="font-size:0.9rem; color:var(--warm-dim); line-height:1.6;">Your question is saved. When Parallel launches, the right people will find it.</p>
+    </div>
+
+    <div style="margin-top:2rem;">
+      <a href="how-it-works.html" class="btn-ghost">See how it works</a>
     </div>
   </section>
 
@@ -1515,14 +1688,6 @@
     }, { threshold: 0.12 });
     reveals.forEach(el => observer.observe(el));
 
-    // Waitlist form
-    const wf = document.getElementById('waitlistForm');
-    if (wf) wf.addEventListener('submit', function(e) {
-      e.preventDefault();
-      wf.style.display = 'none';
-      document.getElementById('successMsg').style.display = 'block';
-    });
-
     // ── Venting animation ──────────────────────────────────────
     const ventPhrases = [
       "my religious parents don't get me at all",
@@ -1619,6 +1784,41 @@
       }
     }
     setTimeout(typeFuzzy, 1200);
+
+    // Prelaunch form
+    const joinForm = document.getElementById('joinForm');
+    const emailInput = document.getElementById('email');
+    const questionInput = document.getElementById('question');
+    const charCountEl = document.getElementById('charCount');
+    const emailError = document.getElementById('emailError');
+    const questionError = document.getElementById('questionError');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnSpinner = document.getElementById('btnSpinner');
+    const formWrapper = document.getElementById('formWrapper');
+    const successState = document.getElementById('successState');
+    if (questionInput) questionInput.addEventListener('input', () => { charCountEl.textContent = questionInput.value.length; });
+    if (joinForm) {
+      joinForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        emailError.classList.remove('visible');
+        questionError.classList.remove('visible');
+        const email = emailInput.value.trim();
+        const question = questionInput.value.trim();
+        let valid = true;
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { emailError.classList.add('visible'); valid = false; }
+        if (!question) { questionError.classList.add('visible'); valid = false; }
+        if (!valid) return;
+        submitBtn.disabled = true;
+        submitBtn.querySelector('.btn-text').style.display = 'none';
+        btnSpinner.style.display = 'inline-flex';
+        try {
+          await fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({ 'form-name': 'parallel-waitlist', email, question }).toString() });
+        } catch(_) {}
+        formWrapper.style.display = 'none';
+        successState.style.display = 'block';
+      });
+    }
   </script>
 </body>
 </html>
