@@ -1198,24 +1198,6 @@
       transform: translateY(0);
     }
 
-
-    .mobile-cta {
-      display: none;
-    }
-    @media (max-width: 900px) {
-      .mobile-cta {
-        display: inline-block;
-        background: var(--sage);
-        color: #fff !important;
-        padding: 10px 20px !important;
-        border-radius: 100px;
-        font-size: 0.875rem !important;
-        font-weight: 500;
-        text-decoration: none;
-        letter-spacing: 0.02em;
-      }
-    }
-
     /* ---- RESPONSIVE ---- */
     @media (max-width: 900px) {
       nav { padding: 20px 24px; }
@@ -1239,15 +1221,13 @@
   <!-- NAV -->
   <nav>
     <a href="index.html" class="nav-logo">Parallel<span>.</span></a>
-    <a href="pricing.html#waitlist" class="mobile-cta">Join waitlist</a>
     <ul class="nav-links">
-      <li><a href="how-it-works.html">How it works</a></li>
+      <li><a href="#how">How it works</a></li>
       <li><a href="#features">Features</a></li>
       <li><a href="#sage">Sage AI</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="parallel-blog.html">Blog</a></li>
-      <li><a href="trust.html">Trust</a></li>
-      <li><a href="pricing.html#waitlist" class="nav-cta">Join waitlist</a></li>
+      <li><a href="pricing.html" class="nav-cta">Join waitlist</a></li>
     </ul>
   </nav>
 
@@ -1258,8 +1238,8 @@
     <h1 class="hero-headline">You don't have to explain yourself here.</h1>
     <p class="hero-sub">Parallel connects you with people who've lived what you're living — not algorithms, not diagnoses. Just people who actually get it.</p>
     <div class="hero-actions">
-      <a href="pricing.html#waitlist" class="btn-primary">Join the waitlist</a>
-      <a href="how-it-works.html" class="btn-ghost">See how it works</a>
+      <a href="pricing.html" class="btn-primary">Find your Parallel</a>
+      <a href="#how" class="btn-ghost">See how it works</a>
     </div>
     <div class="hero-stat-row">
       <div class="hero-stat">
